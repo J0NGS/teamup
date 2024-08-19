@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:teamup/controllers/group_controller.dart';
-import 'package:teamup/models/group.dart';
-import 'package:teamup/models/player.dart';
-import 'package:teamup/utils/colors.dart';
+import 'package:flutter/material.dart';  // Importa o pacote Flutter Material para criar widgets e temas
+import 'package:get/get.dart';  // Importa o pacote GetX para gerenciamento de estado e navegação
+import 'package:teamup/controllers/group_controller.dart';  // Importa o controlador de grupos
+import 'package:teamup/models/group.dart';  // Importa o modelo de grupo
+import 'package:teamup/models/player.dart';  // Importa o modelo de jogador
+import 'package:teamup/utils/colors.dart';  // Importa o arquivo de cores personalizado
 
 class PlayerEditScreen extends StatefulWidget {
-  final Group group;
-  final Player player;
+  final Group group;  // Grupo ao qual o jogador pertence
+  final Player player;  // Jogador que será editado
 
   PlayerEditScreen({required this.group, required this.player});
 
@@ -16,18 +16,18 @@ class PlayerEditScreen extends StatefulWidget {
 }
 
 class _PlayerEditScreenState extends State<PlayerEditScreen> {
-  late TextEditingController _nameController;
-  late String _selectedPosition;
-  late int _skillRating;
-  late int _speed;
-  late int _phase;
-  late int _movement;
-  late String _photoUrl;
+  late TextEditingController _nameController;  // Controlador para o campo de nome
+  late String _selectedPosition;  // Posição selecionada
+  late int _skillRating;  // Nota de habilidade do jogador
+  late int _speed;  // Velocidade do jogador
+  late int _phase;  // Fase do jogador
+  late int _movement;  // Movimentação do jogador
+  late String _photoUrl;  // URL da foto do jogador
 
   @override
   void initState() {
     super.initState();
-    // Initialize controllers and variables with player data
+    // Inicializa os controladores e variáveis com os dados do jogador
     _nameController = TextEditingController(text: widget.player.name);
     _selectedPosition = widget.player.position;
     _skillRating = widget.player.skillRating;
@@ -39,7 +39,7 @@ class _PlayerEditScreenState extends State<PlayerEditScreen> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _nameController.dispose();  // Libera os recursos do controlador de texto
     super.dispose();
   }
 
@@ -47,166 +47,166 @@ class _PlayerEditScreenState extends State<PlayerEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Editar Jogador', style: TextStyle(color: Colors.white)),
-        backgroundColor: Black100,
-        iconTheme: const IconThemeData(color: Colors.green),
+        title: const Text('Editar Jogador', style: TextStyle(color: Colors.white)),  // Título da AppBar
+        backgroundColor: Black100,  // Cor de fundo da AppBar
+        iconTheme: const IconThemeData(color: Colors.green),  // Cor dos ícones da AppBar
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),  // Padding ao redor do corpo da tela
         child: Column(
           children: [
             GestureDetector(
               onTap: () {
-                // Implementar lógica para adicionar a foto
+                // Implementar lógica para adicionar a foto (não está implementado ainda)
               },
               child: Container(
-                color: Black100,
-                width: double.infinity,
-                height: 150,
+                color: Black100,  // Cor de fundo do container da foto
+                width: double.infinity,  // Largura do container
+                height: 150,  // Altura do container
                 child: Center(
                   child: _photoUrl.isEmpty
-                      ? Icon(Icons.person, color: Colors.green, size: 100)
-                      : Image.network(_photoUrl),
+                      ? Icon(Icons.person, color: Colors.green, size: 100)  // Ícone padrão se não houver foto
+                      : Image.network(_photoUrl),  // Exibe a imagem se a URL estiver disponível
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20),  // Espaço entre o container da foto e o próximo widget
             TextField(
-              controller: _nameController,
+              controller: _nameController,  // Controlador para o campo de texto do nome
               decoration: const InputDecoration(
-                labelText: 'Nome',
-                labelStyle: TextStyle(color: Colors.green),
+                labelText: 'Nome',  // Rótulo do campo de texto
+                labelStyle: TextStyle(color: Colors.green),  // Cor do rótulo
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
+                  borderSide: BorderSide(color: Colors.green),  // Cor da borda do campo de texto quando habilitado
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
+                  borderSide: BorderSide(color: Colors.green),  // Cor da borda do campo de texto quando focado
                 ),
               ),
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),  // Cor do texto
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20),  // Espaço entre o campo de texto do nome e o DropdownButton
             DropdownButton<String>(
-              value: _selectedPosition,
-              dropdownColor: Black100,
+              value: _selectedPosition,  // Valor selecionado no DropdownButton
+              dropdownColor: Black100,  // Cor de fundo do DropdownButton
               onChanged: (String? newValue) {
                 setState(() {
-                  _selectedPosition = newValue!;
+                  _selectedPosition = newValue!;  // Atualiza a posição selecionada
                 });
               },
               items: <String>['Atacante', 'Meia', 'Defensor', 'Goleiro']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value, style: const TextStyle(color: Colors.white)),
+                  child: Text(value, style: const TextStyle(color: Colors.white)),  // Texto das opções do DropdownButton
                 );
               }).toList(),
-              hint: const Text('Selecione a Posição', style: TextStyle(color: Colors.white)),
-              iconEnabledColor: Colors.green,
+              hint: const Text('Selecione a Posição', style: TextStyle(color: Colors.white)),  // Texto do hint
+              iconEnabledColor: Colors.green,  // Cor do ícone do DropdownButton
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20),  // Espaço entre o DropdownButton e o campo de texto da nota de habilidade
             TextField(
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.number,  // Tipo de teclado para números
               decoration: const InputDecoration(
-                labelText: 'Nota de Habilidade (0-100)',
-                labelStyle: TextStyle(color: Colors.green),
+                labelText: 'Nota de Habilidade (0-100)',  // Rótulo do campo de texto
+                labelStyle: TextStyle(color: Colors.green),  // Cor do rótulo
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
+                  borderSide: BorderSide(color: Colors.green),  // Cor da borda do campo de texto quando habilitado
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
+                  borderSide: BorderSide(color: Colors.green),  // Cor da borda do campo de texto quando focado
                 ),
               ),
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),  // Cor do texto
               onChanged: (value) {
                 setState(() {
-                  _skillRating = int.tryParse(value) ?? 0;
+                  _skillRating = int.tryParse(value) ?? 0;  // Atualiza a nota de habilidade
                 });
               },
-              controller: TextEditingController(text: _skillRating.toString()),
+              controller: TextEditingController(text: _skillRating.toString()),  // Inicializa o controlador com o valor da nota de habilidade
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 10),  // Espaço entre o campo de texto da nota de habilidade e o Slider da velocidade
             Row(
               children: [
-                const Text('Velocidade', style: TextStyle(color: Colors.white)),
+                const Text('Velocidade', style: TextStyle(color: Colors.white)),  // Rótulo do Slider
                 Expanded(
                   child: Slider(
-                    value: _speed.toDouble(),
-                    min: 1,
-                    max: 3,
-                    divisions: 2,
+                    value: _speed.toDouble(),  // Valor atual do Slider
+                    min: 1,  // Valor mínimo do Slider
+                    max: 3,  // Valor máximo do Slider
+                    divisions: 2,  // Número de divisões no Slider
                     onChanged: (value) {
                       setState(() {
-                        _speed = value.toInt();
+                        _speed = value.toInt();  // Atualiza a velocidade
                       });
                     },
-                    label: '$_speed',
-                    activeColor: Colors.green,
-                    inactiveColor: Colors.white30,
+                    label: '$_speed',  // Rótulo do Slider
+                    activeColor: Colors.green,  // Cor ativa do Slider
+                    inactiveColor: Colors.white30,  // Cor inativa do Slider
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20),  // Espaço entre o Slider da velocidade e o Slider da fase
             Row(
               children: [
-                const Text('Fase', style: TextStyle(color: Colors.white)),
+                const Text('Fase', style: TextStyle(color: Colors.white)),  // Rótulo do Slider
                 Expanded(
                   child: Slider(
-                    value: _phase.toDouble(),
-                    min: 1,
-                    max: 3,
-                    divisions: 2,
+                    value: _phase.toDouble(),  // Valor atual do Slider
+                    min: 1,  // Valor mínimo do Slider
+                    max: 3,  // Valor máximo do Slider
+                    divisions: 2,  // Número de divisões no Slider
                     onChanged: (value) {
                       setState(() {
-                        _phase = value.toInt();
+                        _phase = value.toInt();  // Atualiza a fase
                       });
                     },
-                    label: '$_phase',
-                    activeColor: Colors.green,
-                    inactiveColor: Colors.white30,
+                    label: '$_phase',  // Rótulo do Slider
+                    activeColor: Colors.green,  // Cor ativa do Slider
+                    inactiveColor: Colors.white30,  // Cor inativa do Slider
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 10),  // Espaço entre o Slider da fase e o Slider da movimentação
             Row(
               children: [
-                const Text('Movimentação', style: TextStyle(color: Colors.white)),
+                const Text('Movimentação', style: TextStyle(color: Colors.white)),  // Rótulo do Slider
                 Expanded(
                   child: Slider(
-                    value: _movement.toDouble(),
-                    min: 1,
-                    max: 3,
-                    divisions: 2,
+                    value: _movement.toDouble(),  // Valor atual do Slider
+                    min: 1,  // Valor mínimo do Slider
+                    max: 3,  // Valor máximo do Slider
+                    divisions: 2,  // Número de divisões no Slider
                     onChanged: (value) {
                       setState(() {
-                        _movement = value.toInt();
+                        _movement = value.toInt();  // Atualiza a movimentação
                       });
                     },
-                    label: '$_movement',
-                    activeColor: Colors.green,
-                    inactiveColor: Colors.white30,
+                    label: '$_movement',  // Rótulo do Slider
+                    activeColor: Colors.green,  // Cor ativa do Slider
+                    inactiveColor: Colors.white30,  // Cor inativa do Slider
                   ),
                 ),
               ],
             ),
-            const Spacer(),
+            const Spacer(),  // Espaço flexível para empurrar os botões para o fundo
             Row(
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context);  // Volta à tela anterior sem salvar alterações
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: Colors.red,  // Cor de fundo do botão
                   ),
                   child: const Text(
-                    'Cancelar',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    'Cancelar',  // Texto do botão
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),  // Estilo do texto
                   ),
                 ),
-                const Spacer(),
+                const Spacer(),  // Espaço flexível entre os botões
                 ElevatedButton(
                   onPressed: () {
                     if (_nameController.text.isNotEmpty) {
@@ -220,17 +220,17 @@ class _PlayerEditScreenState extends State<PlayerEditScreen> {
                         photoUrl: _photoUrl,
                       );
 
-                      // Atualizar o jogador no grupo e persistir
+                      // Atualiza o jogador no grupo e persiste as alterações
                       final GroupController groupController = Get.find<GroupController>();
                       groupController.updatePlayer(widget.group, updatedPlayer);
 
-                      // Voltar à tela anterior e atualizar a lista de jogadores
-                      Get.back(result: true); // Passar um resultado para indicar a mudança
+                      // Volta à tela anterior e indica que houve uma mudança
+                      Get.back(result: true);
                     }
                   },
                   child: const Text(
-                    'Salvar',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    'Salvar',  // Texto do botão
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),  // Estilo do texto
                   ),
                 ),
               ],
@@ -238,7 +238,7 @@ class _PlayerEditScreenState extends State<PlayerEditScreen> {
           ],
         ),
       ),
-      backgroundColor: BackgroundBlack,
+      backgroundColor: BackgroundBlack,  // Cor de fundo da tela
     );
   }
 }
