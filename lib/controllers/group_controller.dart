@@ -57,6 +57,24 @@ class GroupController extends GetxController {
     }
   }
 
+  void removeCheckedPlayers(Group group) {
+    final index = groups.indexWhere((g) => g.name == group.name);
+    if (index != -1) {
+      groups[index].players.removeWhere((p) => p.isChecked);
+      _saveToStorage();
+    }
+  }
+  void updatePlayer(Group group, Player updatedPlayer) {
+    final index = groups.indexWhere((g) => g.name == group.name);
+    if (index != -1) {
+      final playerIndex = groups[index].players.indexWhere((p) => p.name == updatedPlayer.name);
+      if (playerIndex != -1) {
+        groups[index].players[playerIndex] = updatedPlayer;
+        _saveToStorage();
+      }
+    }
+  }
+
   void _saveToStorage() {
     box.write('grupos', groups.map((g) => {
       'name': g.name,

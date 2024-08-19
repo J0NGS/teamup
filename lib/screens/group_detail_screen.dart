@@ -4,6 +4,7 @@ import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/models/group.dart';
 import 'package:teamup/models/player.dart';
 import 'package:teamup/screens/playerCreationScreen.dart';
+import 'package:teamup/screens/player_edit_screen.dart'; // Importar a tela de edição
 import 'package:teamup/utils/colors.dart';
 
 class GroupDetailScreen extends StatelessWidget {
@@ -12,11 +13,10 @@ class GroupDetailScreen extends StatelessWidget {
   GroupDetailScreen({required this.group});
 
   Color _getSkillRatingColor(int skillRating) {
-    // Mapear skillRating para uma cor entre vermelho e verde
     double ratio = skillRating / 100.0;
     int red = (255 * (1 - ratio)).toInt();
     int green = (255 * ratio).toInt();
-    return Color.fromARGB(255, red, green, 0); // Cor variando de vermelho para verde
+    return Color.fromARGB(255, red, green, 0);
   }
 
   @override
@@ -28,11 +28,21 @@ class GroupDetailScreen extends StatelessWidget {
         title: Text(group.name, style: TextStyle(color: Colors.white)),
         backgroundColor: Black100,
         iconTheme: IconThemeData(color: Colors.green),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              // Remove players that are checked
+              groupController.removeCheckedPlayers(group);
+              // Força a atualização da tela
+              groupController.groups.refresh();
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Obx(() {
-          // Reagir às mudanças na lista de jogadores
           final updatedGroup = groupController.groups.firstWhere((g) => g.name == group.name);
 
           return Column(
@@ -51,54 +61,69 @@ class GroupDetailScreen extends StatelessWidget {
                     return Card(
                       color: Black100,
                       margin: EdgeInsets.symmetric(vertical: 8.0),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(16.0),
-                        leading: player.photoUrl.isEmpty
-                            ? Icon(Icons.person, color: Colors.green, size: 50)
-                            : Image.network(
-                          player.photoUrl,
-                          width: 50,
-                          height: 50,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Icon(Icons.person, color: Colors.green, size: 50);
-                          },
-                        ),
-                        title: Row(
-                          children: [
-                            Text(
-                              player.name + ' - ' + player.position,
-                              style: TextStyle(color: Colors.white, fontSize: 18.0),
-                            ),
-                            Spacer(),
-                            Container(
-                              padding: EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                color: _getSkillRatingColor(player.skillRating),
-                                borderRadius: BorderRadius.circular(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          Get.to(() => PlayerEditScreen(group: updatedGroup, player: player))!.then((result) {
+                            if (result == true) {
+                              groupController.groups.refresh();
+                            }
+                          });
+                        },
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(16.0),
+                          leading: player.photoUrl.isEmpty
+                              ? Icon(Icons.person, color: Colors.green, size: 50)
+                              : Image.network(
+                            player.photoUrl,
+                            width: 50,
+                            height: 50,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(Icons.person, color: Colors.green, size: 50);
+                            },
+                          ),
+                          title: Row(
+                            children: [
+                              Text(
+                                player.name,
+                                style: TextStyle(color: Colors.white, fontSize: 18.0),
                               ),
-                              constraints: BoxConstraints(
-                                maxWidth: 80, // Tamanho fixo para o container
-                                minWidth: 80,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '${player.skillRating}',
-                                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                              Spacer(),
+                              Container(
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: _getSkillRatingColor(player.skillRating),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                constraints: BoxConstraints(
+                                  maxWidth: 80,
+                                  minWidth: 80,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${player.skillRating}',
+                                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                  ),
                                 ),
                               ),
-                            ),
-                            Spacer(flex: 100,),
-                            Checkbox(
-                              value: player.isChecked,
-                              onChanged: (bool? value) {
-                                if (value != null) {
-                                  player.isChecked = value;
-                                  groupController.updatePlayerCheckedState(group, player); // Atualiza o estado do jogador
-                                  groupController.groups.refresh(); // Força a atualização da lista de grupos
-                                }
-                              },
-                            ),
-                          ],
+                              Spacer(flex: 100,),
+                              Checkbox(
+                                value: player.isChecked,
+                                onChanged: (bool? value) {
+                                  if (value != null) {
+                                    player.isChecked = value;
+                                    groupController.updatePlayerCheckedState(group, player);
+                                    // Força a atualização da tela
+                                    groupController.groups.refresh();
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                          subtitle: Row(
+                            children: [
+                              Spacer(),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -114,8 +139,7 @@ class GroupDetailScreen extends StatelessWidget {
         onPressed: () {
           Get.to(() => PlayerCreationScreen(group: group))!.then((result) {
             if (result == true) {
-              // Atualiza a tela ao voltar
-              groupController.groups.refresh(); // Atualiza a lista
+              groupController.groups.refresh();
             }
           });
         },
