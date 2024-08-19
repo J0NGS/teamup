@@ -4,8 +4,9 @@ import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/models/group.dart';
 import 'package:teamup/models/player.dart';
 import 'package:teamup/screens/playerCreationScreen.dart';
-import 'package:teamup/screens/player_edit_screen.dart'; // Importar a tela de edição
+import 'package:teamup/screens/player_edit_screen.dart';
 import 'package:teamup/utils/colors.dart';
+import 'package:teamup/widgets/team_selection_modal.dart';
 
 class GroupDetailScreen extends StatelessWidget {
   final Group group;
@@ -32,9 +33,7 @@ class GroupDetailScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              // Remove players that are checked
               groupController.removeCheckedPlayers(group);
-              // Força a atualização da tela
               groupController.groups.refresh();
             },
           ),
@@ -44,6 +43,7 @@ class GroupDetailScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Obx(() {
           final updatedGroup = groupController.groups.firstWhere((g) => g.name == group.name);
+          final selectedPlayersCount = updatedGroup.players.where((p) => p.isChecked).length;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,7 +112,6 @@ class GroupDetailScreen extends StatelessWidget {
                                   if (value != null) {
                                     player.isChecked = value;
                                     groupController.updatePlayerCheckedState(group, player);
-                                    // Força a atualização da tela
                                     groupController.groups.refresh();
                                   }
                                 },
@@ -128,6 +127,36 @@ class GroupDetailScreen extends StatelessWidget {
                       ),
                     );
                   },
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Get.bottomSheet(
+                    TeamSelectionModal(selectedPlayersCount: selectedPlayersCount, group: group,),
+                    backgroundColor: Black100,
+                    isScrollControlled: true,
+                  );
+                },
+
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(200, 70),
+                  backgroundColor: Colors.green,
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  alignment: Alignment.center,
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Selecionar Times',
+                      style: TextStyle(color: Colors.white, fontSize: 18.0),
+                    ),
+                    SizedBox(height: 4.0),
+                    Text(
+                      '$selectedPlayersCount jogadores selecionados',
+                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                    ),
+                  ],
                 ),
               ),
             ],
