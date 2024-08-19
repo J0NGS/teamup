@@ -1,50 +1,31 @@
-// lib/screens/home_screen.dart
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/utils/colors.dart';
+import 'package:teamup/widgets/groups_container.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  // Aqui você pode armazenar a lista de grupos e o estado da tela
-  List<String> grupos = [];
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Instancie o controlador
+    final GroupController groupController = Get.put(GroupController());
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('TeamUp!', textAlign: TextAlign.center, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-        backgroundColor: Black100,
-
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: BackgroundBlack,
-        child: Center(
-          child: grupos.isEmpty
-              ? Text('Nenhum grupo criado', style: TextStyle(color: Colors.white),)
-              : ListView.builder(
-            itemCount: grupos.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(grupos[index],  style: TextStyle(color: Colors.white)),
-              );
-            },
-          ),
+        title: Text(
+          'TeamUp!',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
         ),
+        backgroundColor: Black100,
       ),
+      body: GroupsContainer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Lógica para adicionar um novo grupo
-          setState(() {
-            grupos.add('Novo Grupo ${grupos.length + 1}');
-          });
+          groupController.addGroup('Novo Grupo ${groupController.grupos.length + 1}');
         },
         child: Icon(Icons.add),
+        backgroundColor: Colors.green,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -53,8 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'Grupos',
+            icon: Icon(Icons.emoji_events),
+            label: 'Campeonatos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
@@ -62,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         currentIndex: 0,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.grey,
         onTap: (index) {
           // Lógica para mudar de tela com base na aba selecionada
         },
