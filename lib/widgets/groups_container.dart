@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/utils/colors.dart';
-import 'package:teamup/screens/group_detail_screen.dart'; // Importa a tela de detalhes
+import 'package:teamup/screens/group_detail_screen.dart';
 
 class GroupsContainer extends StatelessWidget {
   @override
@@ -14,17 +14,33 @@ class GroupsContainer extends StatelessWidget {
       child: Center(
         child: Obx(() {
           final groupController = Get.find<GroupController>();
-          return groupController.grupos.isEmpty
+          return groupController.groups.isEmpty
               ? Text('Nenhum grupo criado', style: TextStyle(color: Colors.white))
               : ListView.builder(
-            itemCount: groupController.grupos.length,
+            itemCount: groupController.groups.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(groupController.grupos[index], style: TextStyle(color: Colors.white)),
-                onTap: () {
-                  // Navega para a tela de detalhes do grupo
-                  Get.to(() => GroupDetailScreen(groupName: groupController.grupos[index]));
-                },
+              final group = groupController.groups[index];
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                color: Black100,
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(16.0),
+                  title: Text(
+                    group.name,
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      // Remove o grupo da lista
+                      groupController.removeGroup(group);
+                    },
+                  ),
+                  onTap: () {
+                    // Navega para a tela de detalhes do grupo
+                    Get.to(() => GroupDetailScreen(group: group));
+                  },
+                ),
               );
             },
           );

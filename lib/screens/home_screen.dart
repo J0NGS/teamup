@@ -3,16 +3,16 @@ import 'package:get/get.dart';
 import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/utils/colors.dart';
 import 'package:teamup/widgets/groups_container.dart';
+import 'package:teamup/screens/group_creation_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Instancie o controlador
     final GroupController groupController = Get.put(GroupController());
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'TeamUp!',
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
@@ -22,10 +22,10 @@ class HomeScreen extends StatelessWidget {
       body: GroupsContainer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          groupController.addGroup('Novo Grupo ${groupController.grupos.length + 1}');
+          Get.to(() => GroupCreationScreen());
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.green,
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
