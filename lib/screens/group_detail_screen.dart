@@ -4,12 +4,20 @@ import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/models/group.dart';
 import 'package:teamup/models/player.dart';
 import 'package:teamup/screens/playerCreationScreen.dart';
-  import 'package:teamup/utils/colors.dart';
+import 'package:teamup/utils/colors.dart';
 
 class GroupDetailScreen extends StatelessWidget {
   final Group group;
 
   GroupDetailScreen({required this.group});
+
+  Color _getSkillRatingColor(int skillRating) {
+    // Mapear skillRating para uma cor entre vermelho e verde
+    double ratio = skillRating / 100.0;
+    int red = (255 * (1 - ratio)).toInt();
+    int green = (255 * ratio).toInt();
+    return Color.fromARGB(255, red, green, 0); // Cor variando de vermelho para verde
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,27 +48,59 @@ class GroupDetailScreen extends StatelessWidget {
                   itemCount: updatedGroup.players.length,
                   itemBuilder: (context, index) {
                     Player player = updatedGroup.players[index];
-                    return CheckboxListTile(
-                      title: Text(
-                        player.name,
-                        style: TextStyle(color: Colors.white),
+                    return Card(
+                      color: Black100,
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(16.0),
+                        leading: player.photoUrl.isEmpty
+                            ? Icon(Icons.person, color: Colors.green, size: 50)
+                            : Image.network(
+                          player.photoUrl,
+                          width: 50,
+                          height: 50,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(Icons.person, color: Colors.green, size: 50);
+                          },
+                        ),
+                        title: Row(
+                          children: [
+                            Text(
+                              player.name + ' - ' + player.position,
+                              style: TextStyle(color: Colors.white, fontSize: 18.0),
+                            ),
+                            Spacer(),
+                            Container(
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: _getSkillRatingColor(player.skillRating),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              constraints: BoxConstraints(
+                                maxWidth: 80, // Tamanho fixo para o container
+                                minWidth: 80,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${player.skillRating}',
+                                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                ),
+                              ),
+                            ),
+                            Spacer(flex: 100,),
+                            Checkbox(
+                              value: player.isChecked,
+                              onChanged: (bool? value) {
+                                if (value != null) {
+                                  player.isChecked = value;
+                                  groupController.updatePlayerCheckedState(group, player); // Atualiza o estado do jogador
+                                  groupController.groups.refresh(); // Força a atualização da lista de grupos
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      secondary: player.photoUrl.isEmpty
-                          ? Icon(Icons.person, color: Colors.green, size: 50)
-                          : Image.network(
-                        "player.photoUrl",
-                        width: 50,
-                        height: 50,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.person, color: Colors.green, size: 50);
-                        },
-                      ),
-                      value: false, // Exemplo de lógica para check/uncheck
-                      onChanged: (bool? checked) {
-                        // Adicione aqui a lógica para atualizar o status do jogador
-                      },
-                      checkColor: Colors.green,
-                      activeColor: Black100,
                     );
                   },
                 ),
@@ -75,7 +115,7 @@ class GroupDetailScreen extends StatelessWidget {
           Get.to(() => PlayerCreationScreen(group: group))!.then((result) {
             if (result == true) {
               // Atualiza a tela ao voltar
-              Get.forceAppUpdate();
+              groupController.groups.refresh(); // Atualiza a lista
             }
           });
         },

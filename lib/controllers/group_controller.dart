@@ -21,12 +21,12 @@ class GroupController extends GetxController {
           speed: player['speed'],
           phase: player['phase'],
           movement: player['movement'],
-          photoUrl: player['photoUrl'], // Corrigido aqui para incluir photoUrl
+          photoUrl: player['photoUrl'],
+          isChecked: player['isChecked'] ?? false, // Carregar estado da checkbox
         ))),
       )));
     }
   }
-
 
   void addGroup(Group group) {
     groups.add(group);
@@ -46,6 +46,16 @@ class GroupController extends GetxController {
     }
   }
 
+  void updatePlayerCheckedState(Group group, Player player) {
+    final index = groups.indexWhere((g) => g.name == group.name);
+    if (index != -1) {
+      final playerIndex = groups[index].players.indexWhere((p) => p.name == player.name);
+      if (playerIndex != -1) {
+        groups[index].players[playerIndex].isChecked = player.isChecked;
+        _saveToStorage();
+      }
+    }
+  }
 
   void _saveToStorage() {
     box.write('grupos', groups.map((g) => {
@@ -57,9 +67,9 @@ class GroupController extends GetxController {
         'speed': p.speed,
         'phase': p.phase,
         'movement': p.movement,
-        'photoUrl': p.photoUrl, // Incluindo photoUrl
+        'photoUrl': p.photoUrl,
+        'isChecked': p.isChecked, // Salvar estado da checkbox
       }).toList(),
     }).toList());
   }
-
 }

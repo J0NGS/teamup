@@ -6,6 +6,7 @@ class Player {
   int phase;
   int movement;
   String photoUrl; // URL da foto ou caminho para a foto local
+  bool isChecked;
 
   Player({
     required this.name,
@@ -15,5 +16,6 @@ class Player {
     required this.phase,
     required this.movement,
     this.photoUrl = '',
+    this.isChecked = false,
   });
 }
