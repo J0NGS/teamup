@@ -5,6 +5,8 @@ import 'package:teamup/utils/colors.dart';
 import 'package:teamup/widgets/groups_container.dart';
 import 'package:teamup/screens/group_creation_screen.dart';
 
+import 'coming_soon.dart'; // Importar a nova tela
+
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,14 @@ class HomeScreen extends StatelessWidget {
         selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
         onTap: (index) {
-          // Lógica para mudar de tela com base na aba selecionada
+          switch (index) {
+            case 1: // Campeonatos
+            case 2: // Configurações
+              Get.to(() => ComingSoonScreen());
+              break;
+            default:
+              break;
+          }
         },
         backgroundColor: Black100,
       ),
