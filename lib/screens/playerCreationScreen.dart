@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:teamup/models/player.dart';
+import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/models/group.dart';
+import 'package:teamup/models/player.dart';
 import 'package:teamup/utils/colors.dart';
-
-import '../controllers/group_controller.dart';
 
 class PlayerCreationScreen extends StatefulWidget {
   final Group group;
@@ -44,8 +43,10 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                 color: Black100,
                 width: double.infinity,
                 height: 150,
-                child: const Center(
-                  child: Text('Adicionar Foto', style: TextStyle(color: Colors.green)),
+                child: Center(
+                  child: _photoUrl.isEmpty
+                      ? Icon(Icons.person, color: Colors.green, size: 100)
+                      : Image.network(_photoUrl),
                 ),
               ),
             ),
@@ -203,7 +204,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                       groupController.addPlayerToGroup(widget.group, newPlayer);
 
                       // Voltar à tela anterior e atualizar a lista de jogadores
-                      Get.back();
+                      Get.back(result: true); // Passar um resultado para indicar a mudança
                     }
                   },
                   child: const Text(
@@ -211,7 +212,6 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
-
               ],
             ),
           ],

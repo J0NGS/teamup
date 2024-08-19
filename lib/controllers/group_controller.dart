@@ -21,11 +21,12 @@ class GroupController extends GetxController {
           speed: player['speed'],
           phase: player['phase'],
           movement: player['movement'],
-          photoUrl: player['photoUrl'],
+          photoUrl: player['photoUrl'], // Corrigido aqui para incluir photoUrl
         ))),
       )));
     }
   }
+
 
   void addGroup(Group group) {
     groups.add(group);
@@ -38,9 +39,13 @@ class GroupController extends GetxController {
   }
 
   void addPlayerToGroup(Group group, Player player) {
-    group.players.add(player);
-    _saveToStorage();
+    final index = groups.indexWhere((g) => g.name == group.name);
+    if (index != -1) {
+      groups[index].players.add(player);
+      _saveToStorage();
+    }
   }
+
 
   void _saveToStorage() {
     box.write('grupos', groups.map((g) => {
@@ -52,8 +57,9 @@ class GroupController extends GetxController {
         'speed': p.speed,
         'phase': p.phase,
         'movement': p.movement,
-        'photoUrl': p.photoUrl,
+        'photoUrl': p.photoUrl, // Incluindo photoUrl
       }).toList(),
     }).toList());
   }
+
 }

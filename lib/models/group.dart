@@ -4,5 +4,6 @@ class Group {
   String name;
   List<Player> players;
 
-  Group({required this.name, this.players = const []});
+  Group({required this.name, List<Player>? players})
+      : players = players ?? [];
 }
