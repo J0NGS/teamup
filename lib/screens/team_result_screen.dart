@@ -25,7 +25,7 @@ class TeamResultScreen extends StatelessWidget {
 
             return Card(
               color: Black100,  // Cor de fundo do Card
-              margin: EdgeInsets.symmetric(vertical: 8.0),  // Margem vertical do Card
+              margin: const EdgeInsets.symmetric(vertical: 8.0),  // Margem vertical do Card
               child: Padding(
                 padding: const EdgeInsets.all(16.0),  // Padding dentro do Card
                 child: Column(
@@ -33,11 +33,11 @@ class TeamResultScreen extends StatelessWidget {
                   children: [
                     Text(
                       'Time ${index + 1}',  // Nome do time (ex: Time 1, Time 2, etc.)
-                      style: TextStyle(fontSize: 20, color: Colors.white),  // Estilo do texto
+                      style: const TextStyle(fontSize: 20, color: Colors.white),  // Estilo do texto
                     ),
                     Text(
                       'Maior Nota: ${team.map((p) => p.skillRating).reduce((a, b) => a > b ? a : b)}',  // Maior nota de habilidade do time
-                      style: TextStyle(color: Colors.white),  // Estilo do texto
+                      style: const TextStyle(color: Colors.white),  // Estilo do texto
                     ),
                     Text(
                       'Média de Nota: ${averageSkillRating.toStringAsFixed(1)}',  // Média das notas de habilidade do time
@@ -46,7 +46,7 @@ class TeamResultScreen extends StatelessWidget {
                     SizedBox(height: 10),  // Espaço entre os detalhes do time e a lista de jogadores
                     ...team.map((player) => Text(
                       '${player.name} - ${player.skillRating} - ${player.position}',  // Informações do jogador (nome, nota de habilidade e posição)
-                      style: TextStyle(color: Colors.white),  // Estilo do texto
+                      style: const TextStyle(color: Colors.white),  // Estilo do texto
                     )).toList(),  // Converte a lista de widgets Text em uma lista de widgets
                   ],
                 ),

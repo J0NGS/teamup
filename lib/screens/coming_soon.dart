@@ -9,13 +9,13 @@ class ComingSoonScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: BackgroundBlack,  // Define a cor de fundo da tela usando a cor personalizada BackgroundBlack
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Em breve...',  // Define o título da AppBar
           style: TextStyle(color: Colors.green),  // Define o estilo do texto do título, com a cor verde
         ),
         backgroundColor: Black100,  // Define a cor de fundo da AppBar usando a cor personalizada Black100
       ),
-      body: Center(
+      body: const Center(
         // Centraliza o conteúdo dentro do corpo da tela
         child: Text(
           'Em breve...',  // Define o texto que será exibido no corpo da tela
