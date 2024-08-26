@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/utils/colors.dart';
 import 'package:teamup/models/group.dart';
+import 'package:uuid/uuid.dart';
 
 class GroupCreationScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController(); // controlador do campo de texto
@@ -30,7 +31,7 @@ class GroupCreationScreen extends StatelessWidget {
               style: const TextStyle(color: Colors.green), // cor do texto digitado
               cursorColor: Colors.green, // cor do cursor
               decoration: InputDecoration(
-                labelText: 'Nome do Grupo', // rótulo do campo
+                labelText: 'Nome do grupo', // rótulo do campo
                 labelStyle: const TextStyle(color: Colors.green), // cor do rótulo
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0), // cantos arredondados
@@ -68,7 +69,7 @@ class GroupCreationScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     if (_controller.text.isNotEmpty) { // verifica se o campo de texto não está vazio
-                      final newGroup = Group(name: _controller.text); // cria novo grupo
+                      final newGroup = Group(id: Uuid().v4(), name: _controller.text); // cria novo grupo com id
                       groupController.addGroup(newGroup); // adiciona o grupo ao controlador
                       Get.back(); // volta para a tela anterior
                     }

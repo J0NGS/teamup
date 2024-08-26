@@ -1,15 +1,16 @@
 class Player {
+  String id;
   String name;
   String position;
   int skillRating;
   int speed;
   int phase;
   int movement;
-  String photoUrl; // URL da foto ou caminho para a foto local
+  String photoUrl;
   bool isChecked;
-  // criar group;
 
   Player({
+    required this.id,
     required this.name,
     required this.position,
     required this.skillRating,

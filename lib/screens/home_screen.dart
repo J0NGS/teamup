@@ -19,49 +19,38 @@ class HomeScreen extends StatelessWidget {
           style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Black100,
-        actions: [
-          Obx(() {
-            return groupController.groups.isNotEmpty
-                ? IconButton(
-              icon: const Icon(Icons.add, color: Colors.green,),
+      ),
+      body: Container(
+        color: BackgroundBlack, // Define a cor de fundo do body
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            const Padding(
+              padding: EdgeInsets.only(left: 16.0), // Define o padding desejado
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Grupos",
+                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ),
+            ),
+            ElevatedButton(
               onPressed: () {
                 Get.to(() => GroupCreationScreen());
               },
-            )
-                : Container(); // Se não houver grupos, não exibe nada
-          }),
-        ],
-      ),
-      body: GroupsContainer(),  // Exibe os grupos
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events),
-            label: 'Campeonatos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Configurações',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          switch (index) {
-            case 1:  // Campeonatos
-            case 2:  // Configurações
-              Get.to(() => ComingSoonScreen());
-              break;
-            default:
-              break;
-          }
-        },
-        backgroundColor: Black100,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green, // Define a cor de fundo do botão
+                foregroundColor: Colors.black87, // Define a cor do ícone/texto do botão
+              ),
+              child: const Text("Criar Grupo", style: TextStyle(color: Colors.black)),
+            ),
+            const SizedBox(height: 10),
+            const Expanded(
+              child: GroupsContainer(),  // Exibe os grupos
+            ),
+          ],
+        ),
       ),
     );
   }
