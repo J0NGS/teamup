@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:teamup/controllers/group_controller.dart';
+import 'package:teamup/utils/colors.dart';
+import 'package:teamup/widgets/groups_container.dart';
+import 'package:teamup/screens/group_creation_screen.dart';
+import 'coming_soon.dart';
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final GroupController groupController = Get.put(GroupController());  // Gerenciamento de estado
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'TeamUp!',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Black100,
+        actions: [
+          Obx(() {
+            return groupController.groups.isNotEmpty
+                ? IconButton(
+              icon: const Icon(Icons.add, color: Colors.green,),
+              onPressed: () {
+                Get.to(() => GroupCreationScreen());
+              },
+            )
+                : Container(); // Se não houver grupos, não exibe nada
+          }),
+        ],
+      ),
+      body: GroupsContainer(),  // Exibe os grupos
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_events),
+            label: 'Campeonatos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Configurações',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          switch (index) {
+            case 1:  // Campeonatos
+            case 2:  // Configurações
+              Get.to(() => ComingSoonScreen());
+              break;
+            default:
+              break;
+          }
+        },
+        backgroundColor: Black100,
+      ),
+    );
+  }
+}
