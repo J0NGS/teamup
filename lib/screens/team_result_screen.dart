@@ -10,6 +10,7 @@ class TeamResultScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Times Sorteados', style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.green),
         backgroundColor: Black100,
       ),
       body: Padding(
@@ -43,7 +44,7 @@ class TeamResultScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 10),  // Espaço entre os detalhes do time e a lista de jogadores
                     ...team.map((player) => Text(
-                      '${player.name} - ${player.skillRating} - ${player.position}',  // Informações do jogador (nome, nota de habilidade e posição)
+                      '${player.name} - ${player.position} - ${player.skillRating}',  // Informações do jogador (nome, nota de habilidade e posição)
                       style: const TextStyle(color: Colors.white),
                     )).toList(),  // Converte a lista de widgets Text em uma lista de widgets
                   ],

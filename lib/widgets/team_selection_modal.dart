@@ -105,7 +105,7 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
               backgroundColor: Colors.green,
             ),
             child: Center(
-              child: Text('Sortear'),
+              child: Text('Sortear', style: TextStyle(color: Colors.white)),
             ),
           ),
         ],
