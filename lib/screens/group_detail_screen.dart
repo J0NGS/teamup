@@ -1,3 +1,4 @@
+import 'dart:io';  // Import necessário para trabalhar com arquivos locais
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:teamup/controllers/group_controller.dart';
@@ -40,14 +41,14 @@ class GroupDetailScreen extends StatelessWidget {
             },
           ),
           IconButton(
-              icon: Icon(Icons.add, color: Colors.green,),
-              onPressed: (){
+              icon: Icon(Icons.add, color: Colors.green),
+              onPressed: () {
                 Get.to(() => PlayerCreationScreen(group: group))!.then((result) {
                   if (result == true) {
                     groupController.groups.refresh();
                   }
                 });
-              },)
+              })
         ],
       ),
       body: Padding(
@@ -80,8 +81,8 @@ class GroupDetailScreen extends StatelessWidget {
                           contentPadding: EdgeInsets.all(16.0),
                           leading: player.photoUrl.isEmpty
                               ? Icon(Icons.person, color: Colors.green, size: 50)
-                              : Image.network(
-                            player.photoUrl,
+                              : Image.file(
+                            File(player.photoUrl),
                             width: 50,
                             height: 50,
                             errorBuilder: (context, error, stackTrace) {
@@ -105,13 +106,14 @@ class GroupDetailScreen extends StatelessWidget {
                                 child: Center(
                                   child: Text(
                                     '${player.skillRating}',
-                                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                    style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
                               Spacer(),
                               Checkbox(
                                 value: player.isChecked,
+                                activeColor: Colors.green,
                                 onChanged: (bool? value) {
                                   if (value != null) {
                                     player.isChecked = value;

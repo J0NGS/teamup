@@ -10,20 +10,26 @@ class GroupController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print("Loading groups from storage...");
     List<dynamic>? storedGroups = box.read<List<dynamic>>('grupos');
+    print(storedGroups); // Verificar o que está sendo lido
+
     if (storedGroups != null) {
       groups.assignAll(storedGroups.map((group) => Group(
         name: group['name'],
-        players: List<Player>.from(group['players'].map((player) => Player(
-          name: player['name'],
-          position: player['position'],
-          skillRating: player['skillRating'],
-          speed: player['speed'],
-          phase: player['phase'],
-          movement: player['movement'],
-          photoUrl: player['photoUrl'],
-          isChecked: player['isChecked'] ?? false,
-        ))),
+        players: List<Player>.from(group['players'].map((player) {
+          print(player['photoUrl']); // Verificar o valor do photoUrl ao carregar
+          return Player(
+            name: player['name'],
+            position: player['position'],
+            skillRating: player['skillRating'],
+            speed: player['speed'],
+            phase: player['phase'],
+            movement: player['movement'],
+            photoUrl: player['photoUrl'],
+            isChecked: player['isChecked'] ?? false,
+          );
+        })),
       )));
     }
   }
@@ -77,6 +83,9 @@ class GroupController extends GetxController {
   }
 
   void _saveToStorage() {
+    print("Saving groups to storage...");
+    print(groups.map((g) => g.players.map((p) => p.photoUrl).toList()).toList());
+
     box.write('grupos', groups.map((g) => {
       'name': g.name,
       'players': g.players.map((p) => {
