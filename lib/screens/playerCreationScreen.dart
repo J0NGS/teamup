@@ -166,7 +166,6 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                 _phase = value;
               });
             }),
-            const Spacer(),
             Row(
               children: [
                 ElevatedButton(

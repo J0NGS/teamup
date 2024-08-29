@@ -115,7 +115,7 @@ class _PlayerEditScreenState extends State<PlayerEditScreen> {
                   image: _photoUrl.isNotEmpty
                       ? DecorationImage(
                     image: FileImage(File(_photoUrl)),
-                    fit: BoxFit.cover, // Altere esta linha para testar diferentes valores
+                    fit: BoxFit.cover,
                   )
                       : null,
                 ),
