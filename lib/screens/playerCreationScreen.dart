@@ -39,7 +39,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
         backgroundColor: Black100,
         iconTheme: const IconThemeData(color: Colors.green),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(5.0),
         child: Column(
           children: [
@@ -97,30 +97,51 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                 _phase = value;
               });
             }),
-            const Spacer(),
-            ActionButtons(
-              onCancel: () {
-                Navigator.pop(context);
-              },
-              onContinue: () {
-                if (_nameController.text.isNotEmpty) {
-                  final newPlayer = Player(
-                    id: Uuid().v4(),
-                    name: _nameController.text,
-                    position: _selectedPosition,
-                    skillRating: _skillRating,
-                    speed: _speed,
-                    phase: _phase,
-                    movement: _movement,
-                    photoUrl: _photoUrl,
-                  );
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  child: const Text(
+                    'Cancelar',
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_nameController.text.isNotEmpty) {
+                      final newPlayer = Player(
+                        id: Uuid().v4(),
+                        name: _nameController.text,
+                        position: _selectedPosition,
+                        skillRating: _skillRating,
+                        speed: _speed,
+                        phase: _phase,
+                        movement: _movement,
+                        photoUrl: _photoUrl,
+                      );
 
-                  final GroupController groupController = Get.find<GroupController>();
-                  groupController.addPlayerToGroup(widget.group, newPlayer);
+                      final GroupController groupController = Get.find<GroupController>();
+                      groupController.addPlayerToGroup(widget.group, newPlayer);
 
-                  Get.back(result: true);
-                }
-              },
+                      Get.back(result: true);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                  child: const Text(
+                    'Continuar',
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

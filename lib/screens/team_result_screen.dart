@@ -27,7 +27,12 @@ class TeamResultScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.play_arrow, color: Colors.green),
             onPressed: () {
-              // Navegar para a tela de placar
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => ScoreboardSettingsModal(),
+                backgroundColor: Black100,
+                isScrollControlled: true,
+              );
             },
           ),
         ],
@@ -109,8 +114,13 @@ class ScoreboardSettingsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 16.0,
+        right: 16.0,
+        top: 16.0,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -135,7 +145,7 @@ class ScoreboardSettingsModal extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: TextField(
                   controller: _secondsController,
@@ -155,7 +165,7 @@ class ScoreboardSettingsModal extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             children: [
               ElevatedButton(
