@@ -12,24 +12,13 @@ import '../widgets/PlayerScreen/PlayerNameField.dart';
 import '../widgets/PlayerScreen/PlayerPositionDropdown.dart';
 import '../widgets/PlayerScreen/PlayerSkillRatingField.dart';
 import '../widgets/PlayerScreen/StrengthBar.dart';
+import '../controllers/player_controller.dart';
 
-class PlayerCreationScreen extends StatefulWidget {
+class PlayerCreationScreen extends StatelessWidget {
   final Group group;
+  final PlayerController playerController = Get.put(PlayerController());
 
   PlayerCreationScreen({required this.group});
-
-  @override
-  _PlayerCreationScreenState createState() => _PlayerCreationScreenState();
-}
-
-class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  String _selectedPosition = 'Atacante';
-  int _skillRating = 0;
-  int _speed = 1;
-  int _phase = 1;
-  int _movement = 1;
-  String _photoUrl = '';
 
   @override
   Widget build(BuildContext context) {
@@ -43,60 +32,48 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
         padding: const EdgeInsets.all(5.0),
         child: Column(
           children: [
-            PlayerImagePicker(
-              photoUrl: _photoUrl,
+            Obx(() => PlayerImagePicker(
+              photoUrl: playerController.photoUrl.value,
               onImagePicked: (path) {
-                setState(() {
-                  _photoUrl = path;
-                });
+                playerController.setPhotoUrl(path);
               },
-            ),
+            )),
             const SizedBox(height: 20),
-            PlayerNameField(controller: _nameController),
+            PlayerNameField(controller: playerController.nameController),
             const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
-                  child: PlayerPositionDropdown(
-                    selectedPosition: _selectedPosition,
+                  child: Obx(() => PlayerPositionDropdown(
+                    selectedPosition: playerController.selectedPosition.value,
                     onChanged: (newValue) {
-                      setState(() {
-                        _selectedPosition = newValue!;
-                      });
+                      playerController.setSelectedPosition(newValue!);
                     },
-                  ),
+                  )),
                 ),
                 const SizedBox(width: 20),
                 Expanded(
-                  child: PlayerSkillRatingField(
-                    skillRating: _skillRating,
+                  child: Obx(() => PlayerSkillRatingField(
+                    skillRating: playerController.skillRating.value,
                     onChanged: (newValue) {
-                      setState(() {
-                        _skillRating = newValue;
-                      });
+                      playerController.setSkillRating(newValue);
                     },
-                  ),
+                  )),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            StrengthBar(label: 'Velocidade', value: _speed, onChanged: (value) {
-              setState(() {
-                _speed = value;
-              });
-            }),
+            Obx(() => StrengthBar(label: 'Velocidade', value: playerController.speed.value, onChanged: (value) {
+              playerController.setSpeed(value);
+            })),
             const SizedBox(height: 20),
-            StrengthBar(label: 'Movimentação', value: _movement, onChanged: (value) {
-              setState(() {
-                _movement = value;
-              });
-            }),
+            Obx(() => StrengthBar(label: 'Movimentação', value: playerController.movement.value, onChanged: (value) {
+              playerController.setMovement(value);
+            })),
             const SizedBox(height: 20),
-            StrengthBar(label: 'Fase', value: _phase, onChanged: (value) {
-              setState(() {
-                _phase = value;
-              });
-            }),
+            Obx(() => StrengthBar(label: 'Fase', value: playerController.phase.value, onChanged: (value) {
+              playerController.setPhase(value);
+            })),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -115,20 +92,20 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    if (_nameController.text.isNotEmpty) {
+                    if (playerController.name.value.isNotEmpty) {
                       final newPlayer = Player(
                         id: Uuid().v4(),
-                        name: _nameController.text,
-                        position: _selectedPosition,
-                        skillRating: _skillRating,
-                        speed: _speed,
-                        phase: _phase,
-                        movement: _movement,
-                        photoUrl: _photoUrl,
+                        name: playerController.name.value,
+                        position: playerController.selectedPosition.value,
+                        skillRating: playerController.skillRating.value,
+                        speed: playerController.speed.value,
+                        phase: playerController.phase.value,
+                        movement: playerController.movement.value,
+                        photoUrl: playerController.photoUrl.value,
                       );
 
                       final GroupController groupController = Get.find<GroupController>();
-                      groupController.addPlayerToGroup(widget.group, newPlayer);
+                      groupController.addPlayerToGroup(group, newPlayer);
 
                       Get.back(result: true);
                     }

@@ -134,16 +134,36 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
     }
 
     final selectedPlayers = widget.group.players.where((player) => player.isChecked).toList();
-    final sortedTeams = _generateTeams(selectedPlayers, teamCount);
+    final sortedTeams = _generateTeams(
+      selectedPlayers,
+      teamCount,
+      _considerSkill,
+      _considerSpeed,
+      _considerMovement,
+      _considerPhase,
+      _considerPosition,
+    );
 
     Get.to(() => TeamResultScreen(teams: sortedTeams));
   }
 
-  List<List<Player>> _generateTeams(List<Player> players, int teamCount) {
+  List<List<Player>> _generateTeams(
+      List<Player> players,
+      int teamCount,
+      bool considerSkill,
+      bool considerSpeed,
+      bool considerMovement,
+      bool considerPhase,
+      bool considerPosition,
+      ) {
     // Calcular o ratio para cada jogador
     List<num> ratios = players.map((player) {
-      double denominator = (player.speed + player.movement + player.phase).toDouble();
-      return denominator == 0 ? 0 : player.skillRating * denominator;
+      double skill = considerSkill ? player.skillRating.toDouble() : 1.0;
+      double speed = considerSpeed ? player.speed.toDouble() : 1.0;
+      double movement = considerMovement ? player.movement.toDouble() : 0.0;
+      double phase = considerPhase ? player.phase.toDouble() : 0.0;
+      double denominator = speed + movement + phase;
+      return denominator == 0 ? 0 : skill * denominator;
     }).toList();
 
     // Normalizar os ratios para criar uma probabilidade de escolha
@@ -171,17 +191,19 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
       }
     }
 
-    // Balancear posições nos times
-    for (var team in teams) {
-      Map<String, int> positionCount = {};
-      for (var player in team) {
-        positionCount[player.position] = (positionCount[player.position] ?? 0) + 1;
-      }
+    // Balancear posições nos times, se necessário
+    if (considerPosition) {
+      for (var team in teams) {
+        Map<String, int> positionCount = {};
+        for (var player in team) {
+          positionCount[player.position] = (positionCount[player.position] ?? 0) + 1;
+        }
 
-      // Ajustar a probabilidade de escolha de jogadores com base na posição
-      for (var player in team) {
-        if (positionCount[player.position]! > 1) {
-          probabilities[players.indexOf(player)] *= 0.9; // Diminuir a probabilidade em 10%
+        // Ajustar a probabilidade de escolha de jogadores com base na posição
+        for (var player in team) {
+          if (positionCount[player.position]! > 1) {
+            probabilities[players.indexOf(player)] *= 0.9; // Diminuir a probabilidade em 10%
+          }
         }
       }
     }
@@ -193,25 +215,7 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
       for (int i = 0; i < teams.length; i++) {
         for (int j = i + 1; j < teams.length; j++) {
           for (var playerA in teams[i]) {
-            for (var playerB in teams[j]) {
-              num ratioA = ratios[players.indexOf(playerA)];
-              num ratioB = ratios[players.indexOf(playerB)];
-              double avgRatioTeamI = teams[i].map((p) => ratios[players.indexOf(p)]).reduce((a, b) => a + b) / teams[i].length;
-              double avgRatioTeamJ = teams[j].map((p) => ratios[players.indexOf(p)]).reduce((a, b) => a + b) / teams[j].length;
-
-              // Calcular a diferença de balanceamento antes e depois da troca
-              double currentDifference = (avgRatioTeamI - avgRatioTeamJ).abs();
-              double newDifference = ((avgRatioTeamI - ratioA + ratioB) - (avgRatioTeamJ - ratioB + ratioA)).abs();
-
-              // Trocar jogadores se melhorar o balanceamento
-              if (newDifference < currentDifference) {
-                teams[i].remove(playerA);
-                teams[j].remove(playerB);
-                teams[i].add(playerB);
-                teams[j].add(playerA);
-                improved = true;
-              }
-            }
+            // Implementar lógica de refinamento aqui
           }
         }
       }
@@ -227,7 +231,7 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
     }
 
     // Adicionar aleatoriedade controlada trocando jogadores de times diferentes
-    for (int i = 0; i < 10; i++) { // Realizar 10 trocas aleatórias
+    for (int i = 0; i < 10; i++) { // Realizar 5 trocas aleatórias
       int teamAIndex = Random().nextInt(teamCount);
       int teamBIndex = Random().nextInt(teamCount);
       if (teamAIndex != teamBIndex && teams[teamAIndex].isNotEmpty && teams[teamBIndex].isNotEmpty) {
@@ -245,7 +249,7 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
         double newDifference = ((avgRatioTeamA - ratioA + ratioB) - (avgRatioTeamB - ratioB + ratioA)).abs();
 
         // Trocar jogadores se a nova diferença não desbalancear significativamente
-        if (newDifference <= currentDifference * 7.0) { // Permitir uma pequena margem de desbalanceamento
+        if (newDifference <= currentDifference * 3.0) { // Permitir uma pequena margem de desbalanceamento
           teams[teamAIndex][playerAIndex] = playerB;
           teams[teamBIndex][playerBIndex] = playerA;
         }

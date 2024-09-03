@@ -11,42 +11,21 @@ import '../widgets/PlayerScreen/PlayerNameField.dart';
 import '../widgets/PlayerScreen/PlayerPositionDropdown.dart';
 import '../widgets/PlayerScreen/PlayerSkillRatingField.dart';
 import '../widgets/PlayerScreen/StrengthBar.dart';
+import '../controllers/player_controller.dart';
 
-class PlayerEditScreen extends StatefulWidget {
+class PlayerEditScreen extends StatelessWidget {
   final Group group;
   final Player player;
+  final PlayerController playerController = Get.put(PlayerController());
 
-  const PlayerEditScreen({super.key, required this.group, required this.player});
-
-  @override
-  _PlayerEditScreenState createState() => _PlayerEditScreenState();
-}
-
-class _PlayerEditScreenState extends State<PlayerEditScreen> {
-  late TextEditingController _nameController;
-  late String _selectedPosition;
-  late int _skillRating;
-  late int _speed;
-  late int _phase;
-  late int _movement;
-  late String _photoUrl;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: widget.player.name);
-    _selectedPosition = widget.player.position;
-    _skillRating = widget.player.skillRating;
-    _speed = widget.player.speed;
-    _phase = widget.player.phase;
-    _movement = widget.player.movement;
-    _photoUrl = widget.player.photoUrl;
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
+  PlayerEditScreen({required this.group, required this.player}) {
+    playerController.setName(player.name);
+    playerController.setSelectedPosition(player.position);
+    playerController.setSkillRating(player.skillRating);
+    playerController.setSpeed(player.speed);
+    playerController.setPhase(player.phase);
+    playerController.setMovement(player.movement);
+    playerController.setPhotoUrl(player.photoUrl);
   }
 
   @override
@@ -57,88 +36,98 @@ class _PlayerEditScreenState extends State<PlayerEditScreen> {
         backgroundColor: Black100,
         iconTheme: const IconThemeData(color: Colors.green),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(5.0),
         child: Column(
           children: [
-            PlayerImagePicker(
-              photoUrl: _photoUrl,
+            Obx(() => PlayerImagePicker(
+              photoUrl: playerController.photoUrl.value,
               onImagePicked: (path) {
-                setState(() {
-                  _photoUrl = path;
-                });
+                playerController.setPhotoUrl(path);
               },
-            ),
+            )),
             const SizedBox(height: 20),
-            PlayerNameField(controller: _nameController),
+            Obx(() => PlayerNameField(controller: TextEditingController(text: playerController.name.value))),
             const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
-                  child: PlayerPositionDropdown(
-                    selectedPosition: _selectedPosition,
+                  child: Obx(() => PlayerPositionDropdown(
+                    selectedPosition: playerController.selectedPosition.value,
                     onChanged: (newValue) {
-                      setState(() {
-                        _selectedPosition = newValue!;
-                      });
+                      playerController.setSelectedPosition(newValue!);
                     },
-                  ),
+                  )),
                 ),
                 const SizedBox(width: 20),
                 Expanded(
-                  child: PlayerSkillRatingField(
-                    skillRating: _skillRating,
+                  child: Obx(() => PlayerSkillRatingField(
+                    skillRating: playerController.skillRating.value,
                     onChanged: (newValue) {
-                      setState(() {
-                        _skillRating = newValue;
-                      });
+                      playerController.setSkillRating(newValue);
                     },
-                  ),
+                    initialValue: player.skillRating,
+                  )),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            StrengthBar(label: 'Velocidade', value: _speed, onChanged: (value) {
-              setState(() {
-                _speed = value;
-              });
-            }),
+            Obx(() => StrengthBar(label: 'Velocidade', value: playerController.speed.value, onChanged: (value) {
+              playerController.setSpeed(value);
+            })),
             const SizedBox(height: 20),
-            StrengthBar(label: 'Movimentação', value: _movement, onChanged: (value) {
-              setState(() {
-                _movement = value;
-              });
-            }),
+            Obx(() => StrengthBar(label: 'Movimentação', value: playerController.movement.value, onChanged: (value) {
+              playerController.setMovement(value);
+            })),
             const SizedBox(height: 20),
-            StrengthBar(label: 'Fase', value: _phase, onChanged: (value) {
-              setState(() {
-                _phase = value;
-              });
-            }),
-            const Spacer(),
-            ActionButtons(
-              onCancel: () {
-                Navigator.pop(context);
-              },
-              onContinue: () {
-                if (_nameController.text.isNotEmpty) {
-                  final updatedPlayer = Player(
-                    id: widget.player.id,
-                    name: _nameController.text,
-                    position: _selectedPosition,
-                    skillRating: _skillRating,
-                    speed: _speed,
-                    phase: _phase,
-                    movement: _movement,
-                    photoUrl: _photoUrl,
-                  );
+            Obx(() => StrengthBar(label: 'Fase', value: playerController.phase.value, onChanged: (value) {
+              playerController.setPhase(value);
+            })),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  child: const Text(
+                    'Cancelar',
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    if (playerController.name.value.isNotEmpty) {
+                      final updatedPlayer = Player(
+                        id: player.id,
+                        name: playerController.name.value,
+                        position: playerController.selectedPosition.value,
+                        skillRating: playerController.skillRating.value,
+                        speed: playerController.speed.value,
+                        phase: playerController.phase.value,
+                        movement: playerController.movement.value,
+                        photoUrl: playerController.photoUrl.value,
+                      );
 
-                  final GroupController groupController = Get.find<GroupController>();
-                  groupController.updatePlayer(widget.group, updatedPlayer);
+                      final GroupController groupController = Get.find<GroupController>();
+                      groupController.updatePlayer(group, updatedPlayer);
 
-                  Get.back(result: true);
-                }
-              },
+                      Get.back(result: true);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                  child: const Text(
+                    'Continuar',
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

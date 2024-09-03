@@ -80,7 +80,7 @@ class TeamResultScreen extends StatelessWidget {
                                 color: _getSkillRatingColor(player.skillRating),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
-                              constraints: const BoxConstraints(maxWidth: 40, minWidth: 20),
+                              constraints: const BoxConstraints(maxWidth: 70, minWidth: 20),
                               child: Center(
                                 child: Text(
                                   '${player.skillRating}',

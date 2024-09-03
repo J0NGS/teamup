@@ -28,7 +28,11 @@ class GroupController extends GetxController {
     final index = groups.indexWhere((g) => g.name == group.name);
     if (index != -1) {
       groups[index].players.add(player);
+      groups.refresh();
       _saveToStorage();
+      print('Player added: ${player.name} to group: ${group.name}');
+    } else {
+      print('Group not found: ${group.name}');
     }
   }
 
