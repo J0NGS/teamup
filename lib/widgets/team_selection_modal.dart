@@ -177,18 +177,11 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
     List<Player> sortedPlayers = List.from(players);
     sortedPlayers.sort((a, b) => probabilities[players.indexOf(b)].compareTo(probabilities[players.indexOf(a)]));
 
-    // Distribuir jogadores alternando entre os de maior e menor probabilidade com uma relação mais forte
-    int left = 0;
-    int right = sortedPlayers.length - 1;
-    while (left <= right) {
-      if (left <= right) {
-        Player highProbPlayer = sortedPlayers[left++];
-        _addPlayerToTeam(highProbPlayer, teams);
-      }
-      if (left <= right) {
-        Player lowProbPlayer = sortedPlayers[right--];
-        _addPlayerToTeam(lowProbPlayer, teams);
-      }
+    // Distribuir jogadores de forma balanceada
+    int teamIndex = 0;
+    for (var player in sortedPlayers) {
+      teams[teamIndex].add(player);
+      teamIndex = (teamIndex + 1) % teamCount;
     }
 
     // Balancear posições nos times, se necessário
@@ -209,16 +202,37 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
     }
 
     // Refinamento para equilibrar as médias dos ratios dos times
-    bool improved = true;
-    while (improved) {
-      improved = false;
+    for (int iteration = 0; iteration < 50; iteration++) {
+      bool improved = false;
       for (int i = 0; i < teams.length; i++) {
         for (int j = i + 1; j < teams.length; j++) {
           for (var playerA in teams[i]) {
-            // Implementar lógica de refinamento aqui
+            for (var playerB in teams[j]) {
+              // Calcular a média dos ratios antes da troca
+              double avgRatioTeamI = teams[i].map((p) => ratios[players.indexOf(p)]).reduce((a, b) => a + b) / teams[i].length;
+              double avgRatioTeamJ = teams[j].map((p) => ratios[players.indexOf(p)]).reduce((a, b) => a + b) / teams[j].length;
+
+              // Calcular a média dos ratios após a troca
+              double newAvgRatioTeamI = (avgRatioTeamI * teams[i].length - ratios[players.indexOf(playerA)] + ratios[players.indexOf(playerB)]) / teams[i].length;
+              double newAvgRatioTeamJ = (avgRatioTeamJ * teams[j].length - ratios[players.indexOf(playerB)] + ratios[players.indexOf(playerA)]) / teams[j].length;
+
+              // Calcular a diferença de média antes e depois da troca
+              double currentDifference = _calculateTotalDifference(teams, ratios);
+              double newDifference = _calculateTotalDifferenceAfterSwap(teams, ratios, playerA, playerB, i, j);
+
+              // Trocar jogadores se a nova diferença for menor
+              if (newDifference < currentDifference) {
+                teams[i].remove(playerA);
+                teams[j].remove(playerB);
+                teams[i].add(playerB);
+                teams[j].add(playerA);
+                improved = true;
+              }
+            }
           }
         }
       }
+      if (!improved) break;
     }
 
     // Garantir que todos os jogadores foram distribuídos
@@ -240,6 +254,11 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
         Player playerA = teams[teamAIndex][playerAIndex];
         Player playerB = teams[teamBIndex][playerBIndex];
 
+        // Verificar se algum dos jogadores é goleiro
+        if (playerA.position == 'Goleiro' || playerB.position == 'Goleiro') {
+          continue; // Pular a troca se algum dos jogadores for goleiro
+        }
+
         // Calcular a diferença de balanceamento antes e depois da troca
         num ratioA = ratios[players.indexOf(playerA)];
         num ratioB = ratios[players.indexOf(playerB)];
@@ -249,7 +268,7 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
         double newDifference = ((avgRatioTeamA - ratioA + ratioB) - (avgRatioTeamB - ratioB + ratioA)).abs();
 
         // Trocar jogadores se a nova diferença não desbalancear significativamente
-        if (newDifference <= currentDifference * 3.0) { // Permitir uma pequena margem de desbalanceamento
+        if (newDifference <= currentDifference * 1.8) { // Permitir uma pequena margem de desbalanceamento
           teams[teamAIndex][playerAIndex] = playerB;
           teams[teamBIndex][playerBIndex] = playerA;
         }
@@ -257,6 +276,30 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
     }
 
     return teams;
+  }
+
+  double _calculateTotalDifference(List<List<Player>> teams, List<num> ratios) {
+    List<double> avgRatios = teams.map((team) => team.map((p) => ratios[team.indexOf(p)]).reduce((a, b) => a + b) / team.length).toList();
+    double totalDifference = 0.0;
+    for (int i = 0; i < avgRatios.length; i++) {
+      for (int j = i + 1; j < avgRatios.length; j++) {
+        totalDifference += (avgRatios[i] - avgRatios[j]).abs();
+      }
+    }
+    return totalDifference;
+  }
+
+  double _calculateTotalDifferenceAfterSwap(List<List<Player>> teams, List<num> ratios, Player playerA, Player playerB, int teamAIndex, int teamBIndex) {
+    List<double> avgRatios = teams.map((team) => team.map((p) => ratios[team.indexOf(p)]).reduce((a, b) => a + b) / team.length).toList();
+    avgRatios[teamAIndex] = (avgRatios[teamAIndex] * teams[teamAIndex].length - ratios[teams[teamAIndex].indexOf(playerA)] + ratios[teams[teamBIndex].indexOf(playerB)]) / teams[teamAIndex].length;
+    avgRatios[teamBIndex] = (avgRatios[teamBIndex] * teams[teamBIndex].length - ratios[teams[teamBIndex].indexOf(playerB)] + ratios[teams[teamAIndex].indexOf(playerA)]) / teams[teamBIndex].length;
+    double totalDifference = 0.0;
+    for (int i = 0; i < avgRatios.length; i++) {
+      for (int j = i + 1; j < avgRatios.length; j++) {
+        totalDifference += (avgRatios[i] - avgRatios[j]).abs();
+      }
+    }
+    return totalDifference;
   }
 
   void _addPlayerToTeam(Player player, List<List<Player>> teams) {
