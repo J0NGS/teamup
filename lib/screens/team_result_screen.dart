@@ -1,23 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:teamup/models/player.dart';
-import 'package:teamup/utils/colors.dart';
+import 'package:get/get_core/src/get_main.dart';
 
+import '../models/player.dart';
+import '../utils/colors.dart';
 import 'ScoreBoardScreen.dart';
 
 class TeamResultScreen extends StatelessWidget {
   final List<List<Player>> teams;
   TeamResultScreen({required this.teams});
 
-  Color _getSkillRatingColor(int skillRating) {
-    double ratio = skillRating / 100.0;
-    int red = (255 * (1 - ratio)).toInt();
-    int green = (255 * ratio).toInt();
-    return Color.fromARGB(255, red, green, 0);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _timeController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Times Sorteados', style: TextStyle(color: Colors.white)),
@@ -25,13 +22,80 @@ class TeamResultScreen extends StatelessWidget {
         backgroundColor: Black100,
         actions: [
           IconButton(
-            icon: Icon(Icons.play_arrow, color: Colors.green),
-            onPressed: () {
-              showModalBottomSheet(
+            icon: Icon(Icons.timer, color: Colors.green),
+            onPressed: () async {
+              int? pickedMinutes;
+              int? pickedSeconds;
+
+              await showDialog(
                 context: context,
-                builder: (context) => ScoreboardSettingsModal(),
-                backgroundColor: Black100,
-                isScrollControlled: true,
+                builder: (BuildContext context) {
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      return AlertDialog(
+                        backgroundColor: Black100,
+                        title: const Text('Selecione o Tempo', style: TextStyle(color: Colors.green)),
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            DropdownButton<int>(
+                              value: pickedMinutes,
+                              hint: const Text('Minutos', style: TextStyle(color: Colors.green)),
+                              dropdownColor: Black100,
+                              items: List.generate(60, (index) => index).map((int value) {
+                                return DropdownMenuItem<int>(
+                                  value: value,
+                                  child: Text(value.toString().padLeft(2, '0'), style: TextStyle(color: Colors.white)),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  pickedMinutes = value;
+                                });
+                              },
+                            ),
+                            DropdownButton<int>(
+                              value: pickedSeconds,
+                              hint: const Text('Segundos', style: TextStyle(color: Colors.green)),
+                              dropdownColor: Black100,
+                              items: List.generate(60, (index) => index).map((int value) {
+                                return DropdownMenuItem<int>(
+                                  value: value,
+                                  child: Text(value.toString().padLeft(2, '0'), style: TextStyle(color: Colors.white)),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  pickedSeconds = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancelar', style: TextStyle(color: Colors.red)),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              if (pickedMinutes != null && pickedSeconds != null) {
+                                _timeController.text = '${pickedMinutes.toString().padLeft(2, '0')}:${pickedSeconds.toString().padLeft(2, '0')}';
+                                final int totalSeconds = (pickedMinutes! * 60) + pickedSeconds!;
+                                if (totalSeconds > 0) {
+                                  Get.to(() => ScoreboardScreen(timer: totalSeconds));
+                                }
+                              }
+                            },
+                            child: const Text('OK', style: TextStyle(color: Colors.green)),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               );
             },
           ),
@@ -106,96 +170,11 @@ class TeamResultScreen extends StatelessWidget {
       backgroundColor: BackgroundBlack,
     );
   }
-}
 
-class ScoreboardSettingsModal extends StatelessWidget {
-  final TextEditingController _minutesController = TextEditingController();
-  final TextEditingController _secondsController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16.0,
-        right: 16.0,
-        top: 16.0,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('Configurações do Placar', style: TextStyle(color: Colors.green, fontSize: 20)),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _minutesController,
-                  style: TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    labelText: 'Minutos',
-                    labelStyle: TextStyle(color: Colors.green),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: TextField(
-                  controller: _secondsController,
-                  style: TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    labelText: 'Segundos',
-                    labelStyle: TextStyle(color: Colors.green),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  final int minutes = int.tryParse(_minutesController.text) ?? 0;
-                  final int seconds = int.tryParse(_secondsController.text) ?? 0;
-                  final int totalSeconds = (minutes * 60) + seconds;
-                  if (totalSeconds > 0) {
-                    Get.to(() => ScoreboardScreen(timer: totalSeconds));
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
-                child: const Text('Continuar', style: TextStyle(color: Colors.black)),
-              ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () {
-                  Get.back();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                child: const Text('Cancelar', style: TextStyle(color: Colors.black)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+  Color _getSkillRatingColor(int skillRating) {
+    double ratio = skillRating / 100.0;
+    int red = (255 * (1 - ratio)).toInt();
+    int green = (255 * ratio).toInt();
+    return Color.fromARGB(255, red, green, 0);
   }
 }
