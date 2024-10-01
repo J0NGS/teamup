@@ -170,16 +170,6 @@ class ScoreboardSettingsModal extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  Get.back();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                child: const Text('Cancelar', style: TextStyle(color: Colors.black)),
-              ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () {
                   final int minutes = int.tryParse(_minutesController.text) ?? 0;
                   final int seconds = int.tryParse(_secondsController.text) ?? 0;
                   final int totalSeconds = (minutes * 60) + seconds;
@@ -191,6 +181,16 @@ class ScoreboardSettingsModal extends StatelessWidget {
                   backgroundColor: Colors.green,
                 ),
                 child: const Text('Continuar', style: TextStyle(color: Colors.black)),
+              ),
+              const Spacer(),
+              ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text('Cancelar', style: TextStyle(color: Colors.black)),
               ),
             ],
           ),
