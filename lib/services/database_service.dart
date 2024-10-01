@@ -48,5 +48,19 @@ class DatabaseService {
         FOREIGN KEY (groupId) REFERENCES groups (id)
       )
     ''');
+    await db.execute('''
+      CREATE TABLE goals (
+        id TEXT PRIMARY KEY,
+        playerId TEXT,
+        time TEXT
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE matches (
+        id TEXT PRIMARY KEY,
+        date TEXT,
+        goalIds TEXT
+      )
+    ''');
   }
 }
