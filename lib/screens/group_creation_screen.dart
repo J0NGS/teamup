@@ -6,56 +6,56 @@ import 'package:teamup/models/group.dart';
 import 'package:uuid/uuid.dart';
 
 class GroupCreationScreen extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController(); // controlador do campo de texto
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final GroupController groupController = Get.find<GroupController>(); // instancia o controlador de grupos
+    final GroupController groupController = Get.find<GroupController>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastrar Grupo'), // título da appbar
-        backgroundColor: Black100, // cor de fundo da appbar
-        iconTheme: const IconThemeData(color: Colors.green), // cor dos ícones
+        title: const Text('Cadastrar Grupo'),
+        backgroundColor: Black100,
+        iconTheme: const IconThemeData(color: Colors.green),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0), // espaçamento interno
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             const Text(
-              'Cadastrar Grupo', // título da tela
+              'Cadastrar Grupo',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.green),
             ),
             TextField(
-              controller: _controller, // controlador do campo de texto
-              style: const TextStyle(color: Colors.green), // cor do texto digitado
-              cursorColor: Colors.green, // cor do cursor
+              controller: _controller,
+              style: const TextStyle(color: Colors.green),
+              cursorColor: Colors.green,
               decoration: InputDecoration(
-                labelText: 'Nome do grupo', // rótulo do campo
-                labelStyle: const TextStyle(color: Colors.green), // cor do rótulo
+                labelText: 'Nome do grupo',
+                labelStyle: const TextStyle(color: Colors.green),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0), // cantos arredondados
-                  borderSide: const BorderSide(color: Colors.grey), // cor da borda inativa
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: const BorderSide(color: Colors.grey),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0), // cantos arredondados
-                  borderSide: const BorderSide(color: Colors.green), // cor da borda ativa
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: const BorderSide(color: Colors.green),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0), // cantos arredondados
-                  borderSide: const BorderSide(color: Colors.grey), // cor da borda habilitada
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: const BorderSide(color: Colors.grey),
                 ),
-                prefixIconColor: Colors.green, // cor do ícone prefixo
+                prefixIconColor: Colors.green,
               ),
             ),
-            const SizedBox(height: 20), // espaçamento entre o campo e os botões
+            const SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround, // distribuição dos botões
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   style: const ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.red), // cor de fundo do botão
-                    foregroundColor: WidgetStatePropertyAll(Colors.black), // cor do texto do botão
+                    backgroundColor: WidgetStatePropertyAll(Colors.red),
+                    foregroundColor: WidgetStatePropertyAll(Colors.black),
                   ),
                   onPressed: () {
                     Get.back(); // volta para a tela anterior
@@ -64,13 +64,13 @@ class GroupCreationScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   style: const ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.green), // cor de fundo do botão
-                    foregroundColor: WidgetStatePropertyAll(Colors.black), // cor do texto do botão
+                    backgroundColor: WidgetStatePropertyAll(Colors.green),
+                    foregroundColor: WidgetStatePropertyAll(Colors.black),
                   ),
                   onPressed: () {
                     if (_controller.text.isNotEmpty) { // verifica se o campo de texto não está vazio
-                      final newGroup = Group(id: Uuid().v4(), name: _controller.text); // cria novo grupo com id
-                      groupController.addGroup(newGroup); // adiciona o grupo ao controlador
+                      final newGroup = Group(id: Uuid().v4(), name: _controller.text);
+                      groupController.addGroup(newGroup);
                       Get.back(); // volta para a tela anterior
                     }
                   },
@@ -81,7 +81,7 @@ class GroupCreationScreen extends StatelessWidget {
           ],
         ),
       ),
-      backgroundColor: BackgroundBlack, // cor de fundo da tela
+      backgroundColor: BackgroundBlack,
     );
   }
 }

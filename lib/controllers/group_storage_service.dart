@@ -1,51 +1,67 @@
-import 'package:get_storage/get_storage.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:teamup/models/group.dart';
 import 'package:teamup/models/player.dart';
+import 'package:teamup/services/database_service.dart';
 
 class GroupStorageService {
-  final box = GetStorage();
+  final DatabaseService _databaseService = DatabaseService();
 
-  List<Group> readGroups() {
-    List<dynamic>? storedGroups = box.read<List<dynamic>>('grupos');
-    if (storedGroups != null) {
-      return storedGroups.map((group) {
-        return Group(
-          id: group['id'] ?? '', // Verifica se o id não é nulo
-          name: group['name'] ?? 'Unnamed Group', // Verifica se o nome não é nulo
-          players: List<Player>.from(group['players']?.map((player) {
-            return Player(
-              id: player['id'] ?? '', // Verifica se o id não é nulo
-              name: player['name'] ?? 'Unnamed Player', // Verifica se o nome não é nulo
-              position: player['position'] ?? 'Unknown', // Verifica se a posição não é nula
-              skillRating: player['skillRating'] ?? 0, // Verifica se a nota de habilidade não é nula
-              speed: player['speed'] ?? 1, // Verifica se a velocidade não é nula
-              phase: player['phase'] ?? 1, // Verifica se a fase não é nula
-              movement: player['movement'] ?? 1, // Verifica se a movimentação não é nula
-              photoUrl: player['photoUrl'] ?? '', // Verifica se a URL da foto não é nula
-              isChecked: player['isChecked'] ?? false, // Verifica se o estado de verificação não é nulo
-            );
-          }) ?? []), // Garante que a lista de jogadores não seja nula
-        );
-      }).toList();
-    }
-    return [];
+  Future<List<Group>> readGroups() async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> groupMaps = await db.query('groups');
+    final List<Map<String, dynamic>> playerMaps = await db.query('players');
+
+    return groupMaps.map((groupMap) {
+      final groupPlayers = playerMaps
+          .where((playerMap) => playerMap['groupId'] == groupMap['id'])
+          .map((playerMap) => Player(
+        id: playerMap['id'],
+        name: playerMap['name'],
+        position: playerMap['position'],
+        skillRating: playerMap['skillRating'],
+        speed: playerMap['speed'],
+        phase: playerMap['phase'],
+        movement: playerMap['movement'],
+        photoUrl: playerMap['photoUrl'],
+        isChecked: playerMap['isChecked'] == 1,
+      ))
+          .toList();
+
+      return Group(
+        id: groupMap['id'],
+        name: groupMap['name'],
+        players: groupPlayers,
+      );
+    }).toList();
   }
 
-  void writeGroups(List<Group> groups) {
-    box.write('grupos', groups.map((g) => {
-      'id': g.id,
-      'name': g.name,
-      'players': g.players.map((p) => {
-        'id': p.id,
-        'name': p.name,
-        'position': p.position,
-        'skillRating': p.skillRating,
-        'speed': p.speed,
-        'phase': p.phase,
-        'movement': p.movement,
-        'photoUrl': p.photoUrl,
-        'isChecked': p.isChecked,
-      }).toList(),
-    }).toList());
+  Future<void> writeGroups(List<Group> groups) async {
+    final db = await _databaseService.database;
+    await db.transaction((txn) async {
+      await txn.delete('groups');
+      await txn.delete('players');
+
+      for (var group in groups) {
+        await txn.insert('groups', {
+          'id': group.id,
+          'name': group.name,
+        });
+
+        for (var player in group.players) {
+          await txn.insert('players', {
+            'id': player.id,
+            'name': player.name,
+            'position': player.position,
+            'skillRating': player.skillRating,
+            'speed': player.speed,
+            'phase': player.phase,
+            'movement': player.movement,
+            'photoUrl': player.photoUrl,
+            'isChecked': player.isChecked ? 1 : 0,
+            'groupId': group.id,
+          });
+        }
+      }
+    });
   }
 }
