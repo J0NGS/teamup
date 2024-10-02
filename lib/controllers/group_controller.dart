@@ -1,71 +1,74 @@
+// lib/controllers/group_controller.dart
 import 'package:get/get.dart';
 import 'package:teamup/models/group.dart';
 import 'package:teamup/models/player.dart';
+
 import 'group_storage_service.dart';
 
 class GroupController extends GetxController {
   var groups = <Group>[].obs;
-  final GroupStorageService storageService = GroupStorageService();
+  final GroupStorageService _storageService = GroupStorageService();
 
   @override
-  void onInit() async {
+  void onInit() {
     super.onInit();
-    groups.assignAll(await storageService.readGroups());
+    loadGroups();
+  }
+
+  Future<void> loadGroups() async {
+    groups.value = await _storageService.readGroups();
   }
 
   Future<void> addGroup(Group group) async {
-    groups.add(group);
-    await _saveToStorage();
+    await _storageService.createGroup(group);
+    loadGroups();
+  }
+
+  Future<void> updateGroup(Group group) async {
+    await _storageService.updateGroup(group);
+    loadGroups();
   }
 
   Future<void> removeGroup(Group group) async {
-    groups.remove(group);
-    await _saveToStorage();
+    await _storageService.deleteGroup(group.id);
+    loadGroups();
   }
 
   Future<void> addPlayerToGroup(Group group, Player player) async {
-    final index = groups.indexWhere((g) => g.name == group.name);
-    if (index != -1) {
-      groups[index].players.add(player);
-      groups.refresh();
-      await _saveToStorage();
-      print('Player added: ${player.name} to group: ${group.name}');
-    } else {
-      print('Group not found: ${group.name}');
-    }
+    await _storageService.createPlayer(player);
+    loadGroups();
   }
 
-  Future<void> updatePlayerCheckedState(Group group, Player player) async {
-    final index = groups.indexWhere((g) => g.name == group.name);
-    if (index != -1) {
-      final playerIndex = groups[index].players.indexWhere((p) => p.name == player.name);
-      if (playerIndex != -1) {
-        groups[index].players[playerIndex].isChecked = player.isChecked;
-        await _saveToStorage();
-      }
-    }
+  Future<void> updatePlayer(Group group, Player player) async {
+    await _storageService.updatePlayer(player);
+    loadGroups();
+  }
+
+  Future<void> removePlayerFromGroup(Group group, Player player) async {
+    await _storageService.deletePlayer(player.id);
+    loadGroups();
   }
 
   Future<void> removeCheckedPlayers(Group group) async {
-    final index = groups.indexWhere((g) => g.name == group.name);
-    if (index != -1) {
-      groups[index].players.removeWhere((p) => p.isChecked);
-      await _saveToStorage();
+    // Obter todos os jogadores que pertencem ao grupo e estão marcados como isChecked
+    final players = await _storageService.getPlayersByGroupId(group.id);
+    final playersToRemove = players.where((player) => player.isChecked).toList();
+
+    // Remover cada jogador marcado
+    for (var player in playersToRemove) {
+      await _storageService.deletePlayer(player.id);
     }
+
+    // Atualizar a lista de grupos
+    groups.refresh();
   }
 
-  Future<void> updatePlayer(Group group, Player updatedPlayer) async {
-    final index = groups.indexWhere((g) => g.name == group.name);
-    if (index != -1) {
-      final playerIndex = groups[index].players.indexWhere((p) => p.name == updatedPlayer.name);
-      if (playerIndex != -1) {
-        groups[index].players[playerIndex] = updatedPlayer;
-        await _saveToStorage();
-      }
-    }
+  Future<void> updatePlayerCheckedState(Group group, Player player) async {
+    await _storageService.updatePlayer(player);
+    loadGroups();
   }
 
-  Future<void> _saveToStorage() async {
-    await storageService.writeGroups(groups);
+  Future<List<Player>> getPlayersByGroupId(String groupId) async {
+    return await _storageService.getPlayersByGroupId(groupId);
   }
 }
