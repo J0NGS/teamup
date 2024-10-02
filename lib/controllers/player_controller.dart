@@ -9,6 +9,7 @@ class PlayerController extends GetxController {
   var phase = 1.obs;
   var movement = 1.obs;
   var photoUrl = ''.obs;
+  var isChecked = false.obs;
 
   final TextEditingController nameController = TextEditingController();
 
@@ -31,4 +32,5 @@ class PlayerController extends GetxController {
   void setPhase(int value) => phase.value = value;
   void setMovement(int value) => movement.value = value;
   void setPhotoUrl(String value) => photoUrl.value = value;
+  void setIsChecked(bool value) => isChecked.value = value;
 }

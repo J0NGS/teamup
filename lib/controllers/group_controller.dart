@@ -34,36 +34,33 @@ class GroupController extends GetxController {
     loadGroups();
   }
 
-  Future<void> addPlayerToGroup(Group group, Player player) async {
+  Future<void> addPlayerToGroup(Player player) async {
     await _storageService.createPlayer(player);
     loadGroups();
   }
 
-  Future<void> updatePlayer(Group group, Player player) async {
+  Future<void> updatePlayer(Player player) async {
     await _storageService.updatePlayer(player);
     loadGroups();
   }
 
-  Future<void> removePlayerFromGroup(Group group, Player player) async {
+  Future<void> removePlayerFromGroup(Player player) async {
     await _storageService.deletePlayer(player.id);
     loadGroups();
   }
 
   Future<void> removeCheckedPlayers(Group group) async {
-    // Obter todos os jogadores que pertencem ao grupo e estão marcados como isChecked
     final players = await _storageService.getPlayersByGroupId(group.id);
     final playersToRemove = players.where((player) => player.isChecked).toList();
 
-    // Remover cada jogador marcado
     for (var player in playersToRemove) {
       await _storageService.deletePlayer(player.id);
     }
 
-    // Atualizar a lista de grupos
-    groups.refresh();
+    loadGroups();
   }
 
-  Future<void> updatePlayerCheckedState(Group group, Player player) async {
+  Future<void> updatePlayerCheckedState(Player player) async {
     await _storageService.updatePlayer(player);
     loadGroups();
   }

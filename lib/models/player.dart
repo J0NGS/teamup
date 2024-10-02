@@ -18,28 +18,11 @@ class Player {
     required this.speed,
     required this.phase,
     required this.movement,
-    this.photoUrl = '',
-    this.isChecked = false,
+    required this.photoUrl,
+    required this.isChecked,
     required this.groupId,
   });
 
-  // Método para converter um mapa em um objeto Player
-  factory Player.fromMap(Map<String, dynamic> map) {
-    return Player(
-      id: map['id'] ?? '',
-      name: map['name'] ?? '',
-      position: map['position'] ?? '',
-      skillRating: map['skillRating'] ?? 0,
-      speed: map['speed'] ?? 0,
-      phase: map['phase'] ?? 0,
-      movement: map['movement'] ?? 0,
-      photoUrl: map['photoUrl'] ?? '',
-      isChecked: map['isChecked'] ?? false,
-      groupId: map['groupId'] ?? '',
-    );
-  }
-
-  // Método para converter um objeto Player em um mapa
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -50,9 +33,23 @@ class Player {
       'phase': phase,
       'movement': movement,
       'photoUrl': photoUrl,
-      'isChecked': isChecked,
+      'isChecked': isChecked ? 1 : 0, // Convert bool to int
       'groupId': groupId,
     };
   }
 
+  factory Player.fromMap(Map<String, dynamic> map) {
+    return Player(
+      id: map['id'],
+      name: map['name'],
+      position: map['position'],
+      skillRating: map['skillRating'],
+      speed: map['speed'],
+      phase: map['phase'],
+      movement: map['movement'],
+      photoUrl: map['photoUrl'],
+      isChecked: map['isChecked'] == 1, // Convert int to bool
+      groupId: map['groupId'],
+    );
+  }
 }

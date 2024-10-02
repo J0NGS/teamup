@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:teamup/controllers/group_controller.dart';
-import 'package:teamup/models/group.dart';
 import 'package:teamup/models/player.dart';
 import 'package:teamup/utils/colors.dart';
 import '../widgets/PlayerScreen/ActionButton.dart';
@@ -14,11 +13,10 @@ import '../widgets/PlayerScreen/StrengthBar.dart';
 import '../controllers/player_controller.dart';
 
 class PlayerEditScreen extends StatelessWidget {
-  final Group group;
   final Player player;
   final PlayerController playerController = Get.put(PlayerController());
 
-  PlayerEditScreen({required this.group, required this.player}) {
+  PlayerEditScreen({required this.player}) {
     playerController.setName(player.name);
     playerController.setSelectedPosition(player.position);
     playerController.setSkillRating(player.skillRating);
@@ -26,6 +24,7 @@ class PlayerEditScreen extends StatelessWidget {
     playerController.setPhase(player.phase);
     playerController.setMovement(player.movement);
     playerController.setPhotoUrl(player.photoUrl);
+    playerController.setIsChecked(player.isChecked);
   }
 
   @override
@@ -47,7 +46,7 @@ class PlayerEditScreen extends StatelessWidget {
               },
             )),
             const SizedBox(height: 20),
-            Obx(() => PlayerNameField(controller: TextEditingController(text: playerController.name.value))),
+            PlayerNameField(controller: playerController.nameController),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -66,7 +65,6 @@ class PlayerEditScreen extends StatelessWidget {
                     onChanged: (newValue) {
                       playerController.setSkillRating(newValue);
                     },
-                    initialValue: player.skillRating,
                   )),
                 ),
               ],
@@ -111,10 +109,12 @@ class PlayerEditScreen extends StatelessWidget {
                         phase: playerController.phase.value,
                         movement: playerController.movement.value,
                         photoUrl: playerController.photoUrl.value,
+                        isChecked: playerController.isChecked.value,
+                        groupId: player.groupId,
                       );
 
                       final GroupController groupController = Get.find<GroupController>();
-                      groupController.updatePlayer(group, updatedPlayer);
+                      groupController.updatePlayer(updatedPlayer);
 
                       Get.back(result: true);
                     }
@@ -123,7 +123,7 @@ class PlayerEditScreen extends StatelessWidget {
                     backgroundColor: Colors.green,
                   ),
                   child: const Text(
-                    'Continuar',
+                    'Salvar',
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),

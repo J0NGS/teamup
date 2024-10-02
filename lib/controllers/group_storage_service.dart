@@ -38,6 +38,7 @@ class GroupStorageService {
             phase INTEGER,
             movement INTEGER,
             photoUrl TEXT,
+            isChecked INTEGER DEFAULT 0,
             groupId TEXT,
             FOREIGN KEY(groupId) REFERENCES groups(id)
           )

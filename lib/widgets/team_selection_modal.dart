@@ -5,9 +5,12 @@ import 'package:teamup/models/group.dart';
 import 'package:teamup/models/player.dart';
 import 'package:teamup/screens/team_result_screen.dart';
 
+import '../controllers/group_controller.dart';
+
 class TeamSelectionModal extends StatefulWidget {
   final Group group;
   final int selectedPlayersCount;
+
 
   TeamSelectionModal({required this.group, required this.selectedPlayersCount});
 
@@ -49,7 +52,7 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
                 borderSide: BorderSide(color: Colors.green),
               ),
             ),
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           const SizedBox(height: 20),
           const Text(
@@ -126,14 +129,15 @@ class _TeamSelectionModalState extends State<TeamSelectionModal> {
     );
   }
 
-  void _sortTeams() {
+  Future<void> _sortTeams() async {
+    final GroupController groupController = Get.find<GroupController>();
     final int teamCount = int.tryParse(_teamCountController.text) ?? 0;
     if (teamCount <= 0) {
       Get.snackbar('Erro', 'Quantidade de times inválida', backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
 
-    final selectedPlayers = widget.group.players.where((player) => player.isChecked).toList();
+    final selectedPlayers = await groupController.getPlayersByGroupId(widget.group.id).then((players) => players.where((player) => player.isChecked).toList());
     final sortedTeams = _generateTeams(
       selectedPlayers,
       teamCount,

@@ -94,18 +94,20 @@ class PlayerCreationScreen extends StatelessWidget {
                   onPressed: () {
                     if (playerController.name.value.isNotEmpty) {
                       final newPlayer = Player(
-                        id: Uuid().v4(),
-                        name: playerController.name.value,
-                        position: playerController.selectedPosition.value,
-                        skillRating: playerController.skillRating.value,
-                        speed: playerController.speed.value,
-                        phase: playerController.phase.value,
-                        movement: playerController.movement.value,
-                        photoUrl: playerController.photoUrl.value,
+                          id: Uuid().v4(),
+                          name: playerController.name.value,
+                          position: playerController.selectedPosition.value,
+                          skillRating: playerController.skillRating.value,
+                          speed: playerController.speed.value,
+                          phase: playerController.phase.value,
+                          movement: playerController.movement.value,
+                          photoUrl: playerController.photoUrl.value,
+                          isChecked: false,
+                          groupId: group.id
                       );
 
                       final GroupController groupController = Get.find<GroupController>();
-                      groupController.addPlayerToGroup(group, newPlayer);
+                      groupController.addPlayerToGroup(newPlayer);
 
                       Get.back(result: true);
                     }
