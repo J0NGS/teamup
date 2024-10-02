@@ -43,8 +43,12 @@ class TeamResultScreen extends StatelessWidget {
           itemCount: teams.length,
           itemBuilder: (context, index) {
             final team = teams[index];
-            final averageRating = team.map((p) => p.skillRating).reduce((a, b) => a + b) / team.length;
-            final highestRating = team.map((p) => p.skillRating).reduce((a, b) => a > b ? a : b);
+            final averageRating =
+                team.map((p) => p.skillRating).reduce((a, b) => a + b.value) /
+                    team.length;
+            final highestRating = team
+                .map((p) => p.skillRating)
+                .reduce((a, b) => a > b.value ? a : b);
 
             return Card(
               color: Black100,
@@ -71,16 +75,19 @@ class TeamResultScreen extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 '${player.name} - ${player.position} - V:${player.speed} - M:${player.movement} - F:${player.phase}',
-                                style: TextStyle(color: Colors.white, fontSize: 15),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
                               ),
                             ),
                             Container(
                               padding: const EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
-                                color: _getSkillRatingColor(player.skillRating),
+                                color: _getSkillRatingColor(
+                                    player.skillRating.value),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
-                              constraints: const BoxConstraints(maxWidth: 70, minWidth: 20),
+                              constraints: const BoxConstraints(
+                                  maxWidth: 70, minWidth: 20),
                               child: Center(
                                 child: Text(
                                   '${player.skillRating}',
@@ -124,7 +131,8 @@ class ScoreboardSettingsModal extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Configurações do Placar', style: TextStyle(color: Colors.green, fontSize: 20)),
+          const Text('Configurações do Placar',
+              style: TextStyle(color: Colors.green, fontSize: 20)),
           const SizedBox(height: 20),
           Row(
             children: [
@@ -170,8 +178,10 @@ class ScoreboardSettingsModal extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  final int minutes = int.tryParse(_minutesController.text) ?? 0;
-                  final int seconds = int.tryParse(_secondsController.text) ?? 0;
+                  final int minutes =
+                      int.tryParse(_minutesController.text) ?? 0;
+                  final int seconds =
+                      int.tryParse(_secondsController.text) ?? 0;
                   final int totalSeconds = (minutes * 60) + seconds;
                   if (totalSeconds > 0) {
                     Get.to(() => ScoreboardScreen(timer: totalSeconds));
@@ -180,7 +190,8 @@ class ScoreboardSettingsModal extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
-                child: const Text('Continuar', style: TextStyle(color: Colors.black)),
+                child: const Text('Continuar',
+                    style: TextStyle(color: Colors.black)),
               ),
               const Spacer(),
               ElevatedButton(
@@ -190,7 +201,8 @@ class ScoreboardSettingsModal extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                 ),
-                child: const Text('Cancelar', style: TextStyle(color: Colors.black)),
+                child: const Text('Cancelar',
+                    style: TextStyle(color: Colors.black)),
               ),
             ],
           ),

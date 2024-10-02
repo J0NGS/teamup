@@ -103,7 +103,7 @@ class GroupStorageService {
       'players',
       player.toMap(),
       where: 'id = ?',
-      whereArgs: [player.id],
+      whereArgs: [player.id.value],
     );
   }
 

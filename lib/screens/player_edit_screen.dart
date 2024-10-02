@@ -17,21 +17,22 @@ class PlayerEditScreen extends StatelessWidget {
   final PlayerController playerController = Get.put(PlayerController());
 
   PlayerEditScreen({required this.player}) {
-    playerController.setName(player.name);
-    playerController.setSelectedPosition(player.position);
-    playerController.setSkillRating(player.skillRating);
-    playerController.setSpeed(player.speed);
-    playerController.setPhase(player.phase);
-    playerController.setMovement(player.movement);
-    playerController.setPhotoUrl(player.photoUrl);
-    playerController.setIsChecked(player.isChecked);
+    playerController.nameController.value =
+        TextEditingController(text: player.name.value).value;
+    playerController.setSelectedPosition(player.position.value);
+    playerController.setSkillRating(player.skillRating.value);
+    playerController.setSpeed(player.speed.value);
+    playerController.setPhase(player.phase.value);
+    playerController.setMovement(player.movement.value);
+    playerController.setPhotoUrl(player.photoUrl.value);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Editar Jogador', style: TextStyle(color: Colors.white)),
+        title:
+            const Text('Editar Jogador', style: TextStyle(color: Colors.white)),
         backgroundColor: Black100,
         iconTheme: const IconThemeData(color: Colors.green),
       ),
@@ -40,11 +41,11 @@ class PlayerEditScreen extends StatelessWidget {
         child: Column(
           children: [
             Obx(() => PlayerImagePicker(
-              photoUrl: playerController.photoUrl.value,
-              onImagePicked: (path) {
-                playerController.setPhotoUrl(path);
-              },
-            )),
+                  photoUrl: player.photoUrl.value,
+                  onImagePicked: (path) {
+                    playerController.setPhotoUrl(path);
+                  },
+                )),
             const SizedBox(height: 20),
             PlayerNameField(controller: playerController.nameController),
             const SizedBox(height: 20),
@@ -52,35 +53,46 @@ class PlayerEditScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: Obx(() => PlayerPositionDropdown(
-                    selectedPosition: playerController.selectedPosition.value,
-                    onChanged: (newValue) {
-                      playerController.setSelectedPosition(newValue!);
-                    },
-                  )),
+                        selectedPosition:
+                            playerController.selectedPosition.value,
+                        onChanged: (newValue) {
+                          playerController.setSelectedPosition(newValue!);
+                        },
+                      )),
                 ),
                 const SizedBox(width: 20),
                 Expanded(
                   child: Obx(() => PlayerSkillRatingField(
-                    skillRating: playerController.skillRating.value,
-                    onChanged: (newValue) {
-                      playerController.setSkillRating(newValue);
-                    },
-                  )),
+                        initialValue: player.skillRating.value,
+                        skillRating: playerController.skillRating.value,
+                        onChanged: (newValue) {
+                          playerController.setSkillRating(newValue);
+                        },
+                      )),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            Obx(() => StrengthBar(label: 'Velocidade', value: playerController.speed.value, onChanged: (value) {
-              playerController.setSpeed(value);
-            })),
+            Obx(() => StrengthBar(
+                label: 'Velocidade',
+                value: playerController.speed.value,
+                onChanged: (value) {
+                  playerController.setSpeed(value);
+                })),
             const SizedBox(height: 20),
-            Obx(() => StrengthBar(label: 'Movimentação', value: playerController.movement.value, onChanged: (value) {
-              playerController.setMovement(value);
-            })),
+            Obx(() => StrengthBar(
+                label: 'Movimentação',
+                value: playerController.movement.value,
+                onChanged: (value) {
+                  playerController.setMovement(value);
+                })),
             const SizedBox(height: 20),
-            Obx(() => StrengthBar(label: 'Fase', value: playerController.phase.value, onChanged: (value) {
-              playerController.setPhase(value);
-            })),
+            Obx(() => StrengthBar(
+                label: 'Fase',
+                value: playerController.phase.value,
+                onChanged: (value) {
+                  playerController.setPhase(value);
+                })),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -93,29 +105,27 @@ class PlayerEditScreen extends StatelessWidget {
                   ),
                   child: const Text(
                     'Cancelar',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    if (playerController.name.value.isNotEmpty) {
+                    if (playerController.nameController.text.isNotEmpty) {
                       final updatedPlayer = Player(
-                        id: player.id,
-                        name: playerController.name.value,
+                        id: player.id.value,
+                        name: playerController.nameController.text,
                         position: playerController.selectedPosition.value,
                         skillRating: playerController.skillRating.value,
                         speed: playerController.speed.value,
                         phase: playerController.phase.value,
                         movement: playerController.movement.value,
                         photoUrl: playerController.photoUrl.value,
-                        isChecked: playerController.isChecked.value,
-                        groupId: player.groupId,
+                        isChecked: player.isChecked.value,
+                        groupId: player.groupId.value,
                       );
-
-                      final GroupController groupController = Get.find<GroupController>();
-                      groupController.updatePlayer(updatedPlayer);
-
+                      playerController.updatePlayer(updatedPlayer);
                       Get.back(result: true);
                     }
                   },
@@ -124,7 +134,8 @@ class PlayerEditScreen extends StatelessWidget {
                   ),
                   child: const Text(
                     'Salvar',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

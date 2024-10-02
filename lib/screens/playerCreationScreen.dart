@@ -18,13 +18,23 @@ class PlayerCreationScreen extends StatelessWidget {
   final Group group;
   final PlayerController playerController = Get.put(PlayerController());
 
-  PlayerCreationScreen({required this.group});
+  PlayerCreationScreen({required this.group}) {
+    playerController.nameController.clear();
+    playerController.setSelectedPosition('Atacante');
+    playerController.setSkillRating(0);
+    playerController.setSpeed(1);
+    playerController.setPhase(1);
+    playerController.setMovement(1);
+    playerController.setPhotoUrl('');
+  }
 
   @override
   Widget build(BuildContext context) {
+    final PlayerController playerController = Get.find<PlayerController>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastrar Jogador', style: TextStyle(color: Colors.white)),
+        title: const Text('Cadastrar Jogador',
+            style: TextStyle(color: Colors.white)),
         backgroundColor: Black100,
         iconTheme: const IconThemeData(color: Colors.green),
       ),
@@ -33,11 +43,11 @@ class PlayerCreationScreen extends StatelessWidget {
         child: Column(
           children: [
             Obx(() => PlayerImagePicker(
-              photoUrl: playerController.photoUrl.value,
-              onImagePicked: (path) {
-                playerController.setPhotoUrl(path);
-              },
-            )),
+                  photoUrl: playerController.photoUrl.value,
+                  onImagePicked: (path) {
+                    playerController.setPhotoUrl(path);
+                  },
+                )),
             const SizedBox(height: 20),
             PlayerNameField(controller: playerController.nameController),
             const SizedBox(height: 20),
@@ -45,35 +55,45 @@ class PlayerCreationScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: Obx(() => PlayerPositionDropdown(
-                    selectedPosition: playerController.selectedPosition.value,
-                    onChanged: (newValue) {
-                      playerController.setSelectedPosition(newValue!);
-                    },
-                  )),
+                        selectedPosition:
+                            playerController.selectedPosition.value,
+                        onChanged: (newValue) {
+                          playerController.setSelectedPosition(newValue!);
+                        },
+                      )),
                 ),
                 const SizedBox(width: 20),
                 Expanded(
                   child: Obx(() => PlayerSkillRatingField(
-                    skillRating: playerController.skillRating.value,
-                    onChanged: (newValue) {
-                      playerController.setSkillRating(newValue);
-                    },
-                  )),
+                        skillRating: playerController.skillRating.value,
+                        onChanged: (newValue) {
+                          playerController.setSkillRating(newValue);
+                        },
+                      )),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            Obx(() => StrengthBar(label: 'Velocidade', value: playerController.speed.value, onChanged: (value) {
-              playerController.setSpeed(value);
-            })),
+            Obx(() => StrengthBar(
+                label: 'Velocidade',
+                value: playerController.speed.value,
+                onChanged: (value) {
+                  playerController.setSpeed(value);
+                })),
             const SizedBox(height: 20),
-            Obx(() => StrengthBar(label: 'Movimentação', value: playerController.movement.value, onChanged: (value) {
-              playerController.setMovement(value);
-            })),
+            Obx(() => StrengthBar(
+                label: 'Movimentação',
+                value: playerController.movement.value,
+                onChanged: (value) {
+                  playerController.setMovement(value);
+                })),
             const SizedBox(height: 20),
-            Obx(() => StrengthBar(label: 'Fase', value: playerController.phase.value, onChanged: (value) {
-              playerController.setPhase(value);
-            })),
+            Obx(() => StrengthBar(
+                label: 'Fase',
+                value: playerController.phase.value,
+                onChanged: (value) {
+                  playerController.setPhase(value);
+                })),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -86,7 +106,8 @@ class PlayerCreationScreen extends StatelessWidget {
                   ),
                   child: const Text(
                     'Cancelar',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const Spacer(),
@@ -103,11 +124,9 @@ class PlayerCreationScreen extends StatelessWidget {
                           movement: playerController.movement.value,
                           photoUrl: playerController.photoUrl.value,
                           isChecked: false,
-                          groupId: group.id
-                      );
+                          groupId: group.id);
 
-                      final GroupController groupController = Get.find<GroupController>();
-                      groupController.addPlayerToGroup(newPlayer);
+                      playerController.addPlayer(newPlayer);
 
                       Get.back(result: true);
                     }
@@ -117,7 +136,8 @@ class PlayerCreationScreen extends StatelessWidget {
                   ),
                   child: const Text(
                     'Continuar',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
