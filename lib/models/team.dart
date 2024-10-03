@@ -1,13 +1,6 @@
-import 'player.dart';
-
 class Team {
-  final List<Player> players;
-  final double maxRating;
-  final double averageRating;
+  String id;
+  List<String> players;
 
-  Team({
-    required this.players,
-    required this.maxRating,
-    required this.averageRating,
-  });
+  Team({required this.id, required this.players});
 }

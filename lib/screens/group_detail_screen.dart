@@ -45,7 +45,40 @@ class GroupDetailScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              playerController.removeCheckedPlayers(group.id);
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: Black100,
+                    titleTextStyle: const TextStyle(color: Colors.green),
+                    title: const Text('Confirmar Exclusão'),
+                    content: const Text(
+                      'Você tem certeza que deseja excluir os jogadores selecionados?',
+                      style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Cancelar',
+                            style: TextStyle(color: Colors.green)),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Excluir',
+                            style: TextStyle(color: Colors.red)),
+                        onPressed: () {
+                          playerController.removeCheckedPlayers(group.id);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
         ],

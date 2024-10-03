@@ -1,11 +1,12 @@
 class Goal {
   String id;
   String playerId;
-  String time; // Formato: ss:mm
+  String time;
+  String matchId;
 
-  Goal({
-    required this.id,
-    required this.playerId,
-    required this.time,
-  });
+  Goal(
+      {required this.id,
+      required this.playerId,
+      required this.time,
+      required this.matchId});
 }

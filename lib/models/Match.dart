@@ -1,11 +1,14 @@
 class Match {
   String id;
-  String date; // Formato: dd/mm/aaaa - hh:mm
-  List<String> goalIds;
+  String teamAId;
+  String teamBId;
+  List<String> goalsAId;
+  List<String> goalsBId;
 
-  Match({
-    required this.id,
-    required this.date,
-    List<String>? goalIds,
-  }) : goalIds = goalIds ?? [];
+  Match(
+      {required this.id,
+      required this.teamAId,
+      required this.teamBId,
+      required this.goalsAId,
+      required this.goalsBId});
 }
