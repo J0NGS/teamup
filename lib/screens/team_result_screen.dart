@@ -7,12 +7,17 @@ import 'package:teamup/models/team.dart';
 import 'package:teamup/utils/colors.dart';
 import 'package:uuid/uuid.dart';
 
+import '../controllers/event_data_modal_controller.dart';
 import '../models/event.dart';
+import '../widgets/event_data_modal.dart';
 import 'event_screen.dart';
 
 class TeamResultScreen extends StatelessWidget {
   final List<List<Player>> teams;
   TeamResultScreen({required this.teams});
+
+  final EventDataController eventDataController =
+      Get.put(EventDataController());
 
   Color _getSkillRatingColor(int skillRating) {
     double ratio = skillRating / 100.0;
@@ -31,35 +36,40 @@ class TeamResultScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.play_arrow, color: Colors.green),
-            onPressed: () async {
-              final String id = Uuid().v4();
-              final DateTime now = DateTime.now();
-              final Event event = Event(
-                id: id,
-                place: 'Local do Evento',
-                matchTime: Duration(minutes: 90),
-                date: now,
-                groupId: teams.first.first.groupId.value,
-              );
+            onPressed: () {
+              Get.dialog(EventDataModal(
+                onStart: (place, matchTime) async {
+                  final String id = Uuid().v4();
+                  final DateTime now = DateTime.now();
+                  final Event event = Event(
+                    id: id,
+                    place: place,
+                    matchTime: matchTime,
+                    date: now,
+                    groupId: teams.first.first.groupId.value,
+                  );
 
-              final EventController eventController =
-                  Get.put(EventController());
-              await eventController.addEvent(event);
+                  final EventController eventController =
+                      Get.put(EventController());
+                  await eventController.addEvent(event);
 
-              final TeamController teamController = Get.put(TeamController());
-              final List<Team> teamModels = [];
-              for (var team in teams) {
-                final teamId = Uuid().v4();
-                final teamModel = Team(
-                  id: teamId,
-                  players: team.map((player) => player.id.value).toList(),
-                  eventId: event.id,
-                );
-                await teamController.addTeam(teamModel);
-                teamModels.add(teamModel);
-              }
+                  final TeamController teamController =
+                      Get.put(TeamController());
+                  final List<Team> teamModels = [];
+                  for (var team in teams) {
+                    final teamId = Uuid().v4();
+                    final teamModel = Team(
+                      id: teamId,
+                      players: team.map((player) => player.id.value).toList(),
+                      eventId: event.id,
+                    );
+                    await teamController.addTeam(teamModel);
+                    teamModels.add(teamModel);
+                  }
 
-              Get.to(() => EventScreen(event: event, teams: teamModels));
+                  Get.to(() => EventScreen(event: event, teams: teamModels));
+                },
+              ));
             },
           ),
         ],
