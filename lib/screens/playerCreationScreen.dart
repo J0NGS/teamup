@@ -16,7 +16,7 @@ import '../controllers/player_controller.dart';
 
 class PlayerCreationScreen extends StatelessWidget {
   final Group group;
-  final PlayerController playerController = Get.put(PlayerController());
+  final PlayerController playerController = Get.find<PlayerController>();
 
   PlayerCreationScreen({required this.group}) {
     playerController.nameController.clear();
