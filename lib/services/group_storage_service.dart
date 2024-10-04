@@ -1,5 +1,3 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:teamup/models/group.dart';
 
 import 'database_service.dart';

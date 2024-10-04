@@ -5,10 +5,12 @@ import 'package:teamup/screens/home_screen.dart';
 
 void main() async {
   await GetStorage.init();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

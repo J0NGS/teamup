@@ -10,7 +10,7 @@ class ScoreboardController extends GetxController {
 
   void startTimer(int totalSeconds) {
     remainingTime.value = totalSeconds;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime.value > 0) {
         remainingTime.value--;
       } else {

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/utils/colors.dart';
 import 'package:teamup/widgets/groups_container.dart';
 import 'package:teamup/screens/group_creation_screen.dart';
-import 'coming_soon.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final GroupController groupController = Get.put(GroupController());  // Gerenciamento de estado
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -31,7 +27,10 @@ class HomeScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Grupos",
-                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 20),
+                  style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
                 ),
               ),
             ),
@@ -41,13 +40,15 @@ class HomeScreen extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green, // Define a cor de fundo do botão
-                foregroundColor: Colors.black87, // Define a cor do ícone/texto do botão
+                foregroundColor:
+                    Colors.black87, // Define a cor do ícone/texto do botão
               ),
-              child: const Text("Criar Grupo", style: TextStyle(color: Colors.black)),
+              child: const Text("Criar Grupo",
+                  style: TextStyle(color: Colors.black)),
             ),
             const SizedBox(height: 10),
             const Expanded(
-              child: GroupsContainer(),  // Exibe os grupos
+              child: GroupsContainer(), // Exibe os grupos
             ),
           ],
         ),

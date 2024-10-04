@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:teamup/controllers/match_controller.dart';
 import 'package:teamup/models/event.dart';
-import 'package:teamup/models/game.dart';
 import 'package:teamup/models/team.dart';
 import 'package:teamup/utils/colors.dart';
 
@@ -17,8 +16,8 @@ class EventScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Evento', style: TextStyle(color: Colors.white)),
-        iconTheme: IconThemeData(color: Colors.green),
+        title: const Text('Evento', style: TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.green),
         backgroundColor: Black100,
       ),
       body: Column(
@@ -31,11 +30,11 @@ class EventScreen extends StatelessWidget {
               children: [
                 Text(
                   'Local: ${event.place}',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
                 ),
                 Text(
                   'Data: ${event.date}',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ],
             ),
@@ -62,15 +61,18 @@ class EventScreen extends StatelessWidget {
                         children: [
                           Text(
                             'Partida ${index + 1}',
-                            style: TextStyle(color: Colors.green, fontSize: 16),
+                            style: const TextStyle(
+                                color: Colors.green, fontSize: 16),
                           ),
                           Text(
                             'Time A: ${game.teamAId}',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 14),
                           ),
                           Text(
                             'Time B: ${game.teamBId}',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 14),
                           ),
                         ],
                       ),
@@ -89,13 +91,14 @@ class EventScreen extends StatelessWidget {
                         children: [
                           Text(
                             'Time ${index - games.length + 1}',
-                            style: TextStyle(color: Colors.green, fontSize: 16),
+                            style: const TextStyle(
+                                color: Colors.green, fontSize: 16),
                           ),
                           ...team.players.map((playerId) {
                             return Text(
                               'Jogador: $playerId',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                             );
                           }).toList(),
                         ],

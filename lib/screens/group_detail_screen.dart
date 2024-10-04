@@ -8,7 +8,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:teamup/screens/playerCreationScreen.dart';
 import 'package:teamup/screens/player_edit_screen.dart';
 
-import '../controllers/group_controller.dart';
 import '../controllers/player_controller.dart';
 import '../models/group.dart';
 import '../models/player.dart';
@@ -29,7 +28,6 @@ class GroupDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GroupController groupController = Get.find<GroupController>();
     final PlayerController playerController = Get.put(PlayerController());
 
     playerController.loadPlayers(group.id);

@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:teamup/controllers/group_controller.dart';
 import 'package:teamup/models/player.dart';
 import 'package:teamup/utils/colors.dart';
-import '../widgets/PlayerScreen/ActionButton.dart';
 import '../widgets/PlayerScreen/PlayerImagePicker.dart';
 import '../widgets/PlayerScreen/PlayerNameField.dart';
 import '../widgets/PlayerScreen/PlayerPositionDropdown.dart';

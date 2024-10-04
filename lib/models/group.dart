@@ -1,5 +1,3 @@
-import 'package:teamup/models/player.dart';
-
 class Group {
   String id;
   String name;

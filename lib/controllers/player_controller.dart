@@ -4,7 +4,6 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:teamup/services/player_storage_service.dart';
 
 import '../models/player.dart';
-import '../services/group_storage_service.dart';
 
 class PlayerController extends GetxController {
   var players = <Player>[].obs;

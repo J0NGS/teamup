@@ -15,13 +15,14 @@ class EventDataModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Black100,
-      title: Text('Dados do Evento', style: TextStyle(color: Colors.white)),
+      title:
+          const Text('Dados do Evento', style: TextStyle(color: Colors.white)),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _placeController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Local',
               labelStyle: TextStyle(color: Colors.white),
               enabledBorder: UnderlineInputBorder(
@@ -31,11 +32,11 @@ class EventDataModal extends StatelessWidget {
                 borderSide: BorderSide(color: Colors.green),
               ),
             ),
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           TextField(
             controller: _matchTimeController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Duração (mm:ss)',
               labelStyle: TextStyle(color: Colors.white),
               enabledBorder: UnderlineInputBorder(
@@ -63,7 +64,7 @@ class EventDataModal extends StatelessWidget {
                             Expanded(
                               child: Column(
                                 children: [
-                                  Text('Minutos',
+                                  const Text('Minutos',
                                       style: TextStyle(color: Colors.white)),
                                   StatefulBuilder(
                                     builder: (context, setState) {
@@ -74,9 +75,9 @@ class EventDataModal extends StatelessWidget {
                                         onChanged: (value) {
                                           setState(() => minutes = value);
                                         },
-                                        textStyle:
-                                            TextStyle(color: Colors.white),
-                                        selectedTextStyle: TextStyle(
+                                        textStyle: const TextStyle(
+                                            color: Colors.white),
+                                        selectedTextStyle: const TextStyle(
                                             color: Colors.green, fontSize: 24),
                                         itemHeight: 50,
                                         itemWidth: 60,
@@ -91,7 +92,7 @@ class EventDataModal extends StatelessWidget {
                             Expanded(
                               child: Column(
                                 children: [
-                                  Text('Segundos',
+                                  const Text('Segundos',
                                       style: TextStyle(color: Colors.white)),
                                   StatefulBuilder(
                                     builder: (context, setState) {
@@ -102,9 +103,9 @@ class EventDataModal extends StatelessWidget {
                                         onChanged: (value) {
                                           setState(() => seconds = value);
                                         },
-                                        textStyle:
-                                            TextStyle(color: Colors.white),
-                                        selectedTextStyle: TextStyle(
+                                        textStyle: const TextStyle(
+                                            color: Colors.white),
+                                        selectedTextStyle: const TextStyle(
                                             color: Colors.green, fontSize: 24),
                                         itemHeight: 50,
                                         itemWidth: 60,
@@ -123,10 +124,10 @@ class EventDataModal extends StatelessWidget {
                             Navigator.of(context).pop(
                                 Duration(minutes: minutes, seconds: seconds));
                           },
-                          child:
-                              Text('OK', style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green),
+                          child: const Text('OK',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ],
                     ),
@@ -138,7 +139,7 @@ class EventDataModal extends StatelessWidget {
                     '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
               }
             },
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ],
       ),
@@ -147,7 +148,7 @@ class EventDataModal extends StatelessWidget {
           onPressed: () {
             Get.back();
           },
-          child: Text('Cancelar', style: TextStyle(color: Colors.red)),
+          child: const Text('Cancelar', style: TextStyle(color: Colors.red)),
         ),
         TextButton(
           onPressed: () {
@@ -160,7 +161,7 @@ class EventDataModal extends StatelessWidget {
             onStart(place, matchTime);
             Get.back();
           },
-          child: Text('Iniciar', style: TextStyle(color: Colors.green)),
+          child: const Text('Iniciar', style: TextStyle(color: Colors.green)),
         ),
       ],
     );
