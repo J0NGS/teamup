@@ -3,7 +3,7 @@ class Goal {
   String playerId;
   String teamId;
   String gameId;
-  DateTime time;
+  Duration time;
 
   Goal({
     required this.id,
@@ -19,7 +19,7 @@ class Goal {
       'playerId': playerId,
       'teamId': teamId,
       'matchId': gameId,
-      'time': time.toIso8601String(),
+      'time': time.inMinutes.toString(), // Correct method
     };
   }
 
@@ -29,7 +29,7 @@ class Goal {
       playerId: map['playerId'],
       teamId: map['teamId'],
       gameId: map['matchId'],
-      time: DateTime.parse(map['time']),
+      time: Duration(minutes: int.parse(map['time'])), // Correct type
     );
   }
 }

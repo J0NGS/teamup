@@ -12,6 +12,10 @@ class GoalController extends GetxController {
     loadGoals();
   }
 
+  Future<Goal?> getById(String id) async {
+    return goals.firstWhereOrNull((goal) => goal.id == id);
+  }
+
   Future<void> loadGoals() async {
     goals.value = await _storageService.readGoals();
   }

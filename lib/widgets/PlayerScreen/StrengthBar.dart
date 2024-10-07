@@ -5,7 +5,11 @@ class StrengthBar extends StatelessWidget {
   final int value;
   final ValueChanged<int> onChanged;
 
-  const StrengthBar({required this.label, required this.value, required this.onChanged});
+  const StrengthBar(
+      {super.key,
+      required this.label,
+      required this.value,
+      required this.onChanged});
 
   Color _getBarColor(int value) {
     switch (value) {

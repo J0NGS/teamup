@@ -1,6 +1,3 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'dart:convert';
 import 'package:teamup/models/team.dart';
 
 import 'database_service.dart';

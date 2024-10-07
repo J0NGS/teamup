@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:teamup/utils/colors.dart';
 
-import '../controllers/ScoreboardController.dart';
+import '../controllers/score_board_controller.dart';
 
 class ScoreboardScreen extends StatelessWidget {
   final int timer;
-  ScoreboardScreen({required this.timer});
+  const ScoreboardScreen({super.key, required this.timer});
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +29,10 @@ class ScoreboardScreen extends StatelessWidget {
                 color: Colors.blue,
                 child: Center(
                   child: Obx(() => Text(
-                    '${controller.scoreTeam1.value}',
-                    style: const TextStyle(color: Colors.white, fontSize: 100),
-                  )),
+                        '${controller.scoreTeam1.value}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 100),
+                      )),
                 ),
               ),
             ),
@@ -41,9 +42,9 @@ class ScoreboardScreen extends StatelessWidget {
             height: 100,
             child: Center(
               child: Obx(() => Text(
-                '${controller.remainingTime.value}',
-                style: const TextStyle(color: Colors.white, fontSize: 50),
-              )),
+                    '${controller.remainingTime.value}',
+                    style: const TextStyle(color: Colors.white, fontSize: 50),
+                  )),
             ),
           ),
           Expanded(
@@ -54,9 +55,10 @@ class ScoreboardScreen extends StatelessWidget {
                 color: Colors.red,
                 child: Center(
                   child: Obx(() => Text(
-                    '${controller.scoreTeam2.value}',
-                    style: const TextStyle(color: Colors.white, fontSize: 100),
-                  )),
+                        '${controller.scoreTeam2.value}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 100),
+                      )),
                 ),
               ),
             ),

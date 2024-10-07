@@ -13,7 +13,7 @@ class PlayerEditScreen extends StatelessWidget {
   final Player player;
   final PlayerController playerController = Get.put(PlayerController());
 
-  PlayerEditScreen({required this.player}) {
+  PlayerEditScreen({super.key, required this.player}) {
     playerController.nameController.value =
         TextEditingController(text: player.name.value).value;
     playerController.setSelectedPosition(player.position.value);

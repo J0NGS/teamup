@@ -12,6 +12,10 @@ class MatchController extends GetxController {
     loadMatches();
   }
 
+  Future<Game?> getById(String id) async {
+    return matches.firstWhereOrNull((game) => game.id == id);
+  }
+
   Future<void> loadMatches() async {
     matches.value = await _storageService.readMatches();
   }

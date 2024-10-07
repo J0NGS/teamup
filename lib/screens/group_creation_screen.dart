@@ -8,9 +8,11 @@ import 'package:uuid/uuid.dart';
 class GroupCreationScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
 
+  GroupCreationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final GroupController groupController = Get.find<GroupController>();
+    final GroupController groupController = Get.put(GroupController());
 
     return Scaffold(
       appBar: AppBar(
@@ -24,7 +26,10 @@ class GroupCreationScreen extends StatelessWidget {
           children: [
             const Text(
               'Cadastrar Grupo',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.green),
+              style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green),
             ),
             TextField(
               controller: _controller,
@@ -60,7 +65,9 @@ class GroupCreationScreen extends StatelessWidget {
                   onPressed: () {
                     Get.back(); // volta para a tela anterior
                   },
-                  child: const Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                  child: const Text('Cancelar',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black)),
                 ),
                 ElevatedButton(
                   style: const ButtonStyle(
@@ -68,13 +75,17 @@ class GroupCreationScreen extends StatelessWidget {
                     foregroundColor: WidgetStatePropertyAll(Colors.black),
                   ),
                   onPressed: () {
-                    if (_controller.text.isNotEmpty) { // verifica se o campo de texto não está vazio
-                      final newGroup = Group(id: Uuid().v4(), name: _controller.text);
+                    if (_controller.text.isNotEmpty) {
+                      // verifica se o campo de texto não está vazio
+                      final newGroup =
+                          Group(id: const Uuid().v4(), name: _controller.text);
                       groupController.addGroup(newGroup);
                       Get.back(); // volta para a tela anterior
                     }
                   },
-                  child: const Text('Continuar', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                  child: const Text('Continuar',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black)),
                 ),
               ],
             ),

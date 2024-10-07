@@ -6,7 +6,8 @@ class PlayerImagePicker extends StatelessWidget {
   final String photoUrl;
   final ValueChanged<String> onImagePicked;
 
-  const PlayerImagePicker({required this.photoUrl, required this.onImagePicked});
+  const PlayerImagePicker(
+      {super.key, required this.photoUrl, required this.onImagePicked});
 
   Future<void> _pickImage(BuildContext context) async {
     final picker = ImagePicker();
@@ -30,9 +31,9 @@ class PlayerImagePicker extends StatelessWidget {
           border: Border.all(color: Colors.green, width: 3),
           image: photoUrl.isNotEmpty
               ? DecorationImage(
-            image: FileImage(File(photoUrl)),
-            fit: BoxFit.cover,
-          )
+                  image: FileImage(File(photoUrl)),
+                  fit: BoxFit.cover,
+                )
               : null,
         ),
         child: photoUrl.isEmpty

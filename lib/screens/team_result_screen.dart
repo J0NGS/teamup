@@ -14,7 +14,7 @@ import 'event_screen.dart';
 
 class TeamResultScreen extends StatelessWidget {
   final List<List<Player>> teams;
-  TeamResultScreen({required this.teams});
+  TeamResultScreen({super.key, required this.teams});
 
   final EventDataController eventDataController =
       Get.put(EventDataController());
@@ -30,16 +30,17 @@ class TeamResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Times Sorteados', style: TextStyle(color: Colors.white)),
-        iconTheme: IconThemeData(color: Colors.green),
+        title: const Text('Times Sorteados',
+            style: TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.green),
         backgroundColor: Black100,
         actions: [
           IconButton(
-            icon: Icon(Icons.play_arrow, color: Colors.green),
+            icon: const Icon(Icons.play_arrow, color: Colors.green),
             onPressed: () {
               Get.dialog(EventDataModal(
                 onStart: (place, matchTime) async {
-                  final String id = Uuid().v4();
+                  final String id = const Uuid().v4();
                   final DateTime now = DateTime.now();
                   final Event event = Event(
                     id: id,
@@ -57,7 +58,7 @@ class TeamResultScreen extends StatelessWidget {
                       Get.put(TeamController());
                   final List<Team> teamModels = [];
                   for (var team in teams) {
-                    final teamId = Uuid().v4();
+                    final teamId = const Uuid().v4();
                     final teamModel = Team(
                       id: teamId,
                       players: team.map((player) => player.id.value).toList(),
@@ -97,11 +98,13 @@ class TeamResultScreen extends StatelessWidget {
                   children: [
                     Text(
                       'Média de Nota: ${averageRating.toStringAsFixed(2)}',
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 16.0),
                     ),
                     Text(
                       'Maior Nota: $highestRating',
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 16.0),
                     ),
                     const SizedBox(height: 10),
                     ...team.map((player) {
@@ -112,7 +115,7 @@ class TeamResultScreen extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 '${player.name} - ${player.position} - V:${player.speed} - M:${player.movement} - F:${player.phase}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.white, fontSize: 15),
                               ),
                             ),
@@ -139,7 +142,7 @@ class TeamResultScreen extends StatelessWidget {
                           ],
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),

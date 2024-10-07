@@ -14,7 +14,7 @@ class GroupsContainer extends StatelessWidget {
       height: double.infinity,
       color: BackgroundBlack,
       child: Obx(() {
-        final groupController = Get.find<GroupController>();
+        final groupController = Get.put(GroupController());
         return groupController.groups.isEmpty
             ? const Column(
                 mainAxisAlignment: MainAxisAlignment

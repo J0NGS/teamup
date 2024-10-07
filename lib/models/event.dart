@@ -34,4 +34,9 @@ class Event {
       groupId: map['groupId'],
     );
   }
+
+  String get formattedDate {
+    final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
+    return formatter.format(date);
+  }
 }

@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'TeamUp!',
       theme: ThemeData(primaryColor: Colors.green),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

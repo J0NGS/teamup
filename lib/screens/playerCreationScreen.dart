@@ -15,7 +15,7 @@ class PlayerCreationScreen extends StatelessWidget {
   final Group group;
   final PlayerController playerController = Get.find<PlayerController>();
 
-  PlayerCreationScreen({required this.group}) {
+  PlayerCreationScreen({super.key, required this.group}) {
     playerController.nameController.clear();
     playerController.setSelectedPosition('Atacante');
     playerController.setSkillRating(0);
@@ -112,7 +112,7 @@ class PlayerCreationScreen extends StatelessWidget {
                   onPressed: () {
                     if (playerController.name.value.isNotEmpty) {
                       final newPlayer = Player(
-                          id: Uuid().v4(),
+                          id: const Uuid().v4(),
                           name: playerController.name.value,
                           position: playerController.selectedPosition.value,
                           skillRating: playerController.skillRating.value,

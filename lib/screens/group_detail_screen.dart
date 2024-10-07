@@ -17,7 +17,7 @@ import '../widgets/team_selection_modal.dart';
 class GroupDetailScreen extends StatelessWidget {
   final Group group;
 
-  GroupDetailScreen({required this.group});
+  const GroupDetailScreen({super.key, required this.group});
 
   Color _getSkillRatingColor(int skillRating) {
     double ratio = skillRating / 100.0;
@@ -87,7 +87,7 @@ class GroupDetailScreen extends StatelessWidget {
           if (playerController.players.isEmpty) {
             return Column(
               children: [
-                Padding(padding: const EdgeInsets.all(5.0)),
+                const Padding(padding: EdgeInsets.all(5.0)),
                 ElevatedButton(
                   onPressed: () {
                     Get.to(() => PlayerCreationScreen(group: group))!
@@ -118,7 +118,7 @@ class GroupDetailScreen extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.center,
                   child: ElevatedButton(

@@ -5,6 +5,8 @@ import 'package:teamup/widgets/groups_container.dart';
 import 'package:teamup/screens/group_creation_screen.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

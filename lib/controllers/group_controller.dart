@@ -14,6 +14,10 @@ class GroupController extends GetxController {
     loadGroups();
   }
 
+  Future<Group?> getById(String id) async {
+    return groups.firstWhereOrNull((group) => group.id == id);
+  }
+
   Future<void> loadGroups() async {
     groups.value = await _storageService.readGroups();
   }

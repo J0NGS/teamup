@@ -4,7 +4,8 @@ class ActionButtons extends StatelessWidget {
   final VoidCallback onCancel;
   final VoidCallback onContinue;
 
-  ActionButtons({required this.onCancel, required this.onContinue});
+  const ActionButtons(
+      {super.key, required this.onCancel, required this.onContinue});
 
   @override
   Widget build(BuildContext context) {

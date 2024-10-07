@@ -12,6 +12,10 @@ class EventController extends GetxController {
     loadEvents();
   }
 
+  Future<Event?> getById(String id) async {
+    return events.firstWhereOrNull((event) => event.id == id);
+  }
+
   Future<void> loadEvents() async {
     events.value = await _storageService.readEvents();
   }

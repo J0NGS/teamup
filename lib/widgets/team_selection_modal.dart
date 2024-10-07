@@ -6,7 +6,8 @@ class TeamSelectionModal extends StatefulWidget {
   final Group group;
   final int selectedPlayersCount;
 
-  TeamSelectionModal({required this.group, required this.selectedPlayersCount});
+  const TeamSelectionModal(
+      {super.key, required this.group, required this.selectedPlayersCount});
 
   @override
   TeamSelectionModalState createState() => TeamSelectionModalState();

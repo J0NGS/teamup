@@ -12,6 +12,10 @@ class TeamController extends GetxController {
     loadTeams();
   }
 
+  Future<Team?> getById(String id) async {
+    return teams.firstWhereOrNull((team) => team.id == id);
+  }
+
   Future<void> loadTeams() async {
     teams.value = await _storageService.readTeams();
   }

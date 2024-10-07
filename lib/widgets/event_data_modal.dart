@@ -6,7 +6,7 @@ import 'package:teamup/utils/colors.dart';
 class EventDataModal extends StatelessWidget {
   final Function(String, Duration) onStart;
 
-  EventDataModal({required this.onStart});
+  EventDataModal({super.key, required this.onStart});
 
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _matchTimeController = TextEditingController();

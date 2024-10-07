@@ -63,6 +63,7 @@ class DatabaseService {
             teamAId TEXT,
             teamBId TEXT,
             eventId TEXT,
+            time TEXT,
             FOREIGN KEY(teamAId) REFERENCES teams(id),
             FOREIGN KEY(teamBId) REFERENCES teams(id),
             FOREIGN KEY(eventId) REFERENCES events(id)

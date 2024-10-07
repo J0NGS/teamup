@@ -41,6 +41,10 @@ class PlayerController extends GetxController {
   void setPhotoUrl(String value) => photoUrl.value = value;
   void setIsChecked(bool value) => isChecked.value = value;
 
+  Future<Player?> getById(String id) async {
+    return players.firstWhereOrNull((player) => player.id.value == id);
+  }
+
   Future<void> loadPlayers(String groupId) async {
     players.value = await _storageService.getPlayersByGroupId(groupId);
   }
