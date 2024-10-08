@@ -47,7 +47,7 @@ class TeamResultScreen extends StatelessWidget {
                     place: place,
                     matchTime: matchTime,
                     date: now,
-                    groupId: teams.first.first.groupId.value,
+                    groupId: teams.first.first.groupId,
                   );
 
                   final EventController eventController =
@@ -61,7 +61,7 @@ class TeamResultScreen extends StatelessWidget {
                     final teamId = const Uuid().v4();
                     final teamModel = Team(
                       id: teamId,
-                      players: team.map((player) => player.id.value).toList(),
+                      players: team.map((player) => player.id).toList(),
                       eventId: event.id,
                     );
                     await teamController.addTeam(teamModel);
@@ -82,11 +82,10 @@ class TeamResultScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final team = teams[index];
             final averageRating =
-                team.map((p) => p.skillRating).reduce((a, b) => a + b.value) /
+                team.map((p) => p.skillRating).reduce((a, b) => a + b) /
                     team.length;
-            final highestRating = team
-                .map((p) => p.skillRating)
-                .reduce((a, b) => a > b.value ? a : b);
+            final highestRating =
+                team.map((p) => p.skillRating).reduce((a, b) => a > b ? a : b);
 
             return Card(
               color: Black100,
@@ -122,8 +121,7 @@ class TeamResultScreen extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
-                                color: _getSkillRatingColor(
-                                    player.skillRating.value),
+                                color: _getSkillRatingColor(player.skillRating),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               constraints: const BoxConstraints(

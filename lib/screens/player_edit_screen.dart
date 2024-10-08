@@ -15,13 +15,13 @@ class PlayerEditScreen extends StatelessWidget {
 
   PlayerEditScreen({super.key, required this.player}) {
     playerController.nameController.value =
-        TextEditingController(text: player.name.value).value;
-    playerController.setSelectedPosition(player.position.value);
-    playerController.setSkillRating(player.skillRating.value);
-    playerController.setSpeed(player.speed.value);
-    playerController.setPhase(player.phase.value);
-    playerController.setMovement(player.movement.value);
-    playerController.setPhotoUrl(player.photoUrl.value);
+        TextEditingController(text: player.name).value;
+    playerController.setSelectedPosition(player.position);
+    playerController.setSkillRating(player.skillRating);
+    playerController.setSpeed(player.speed);
+    playerController.setPhase(player.phase);
+    playerController.setMovement(player.movement);
+    playerController.setPhotoUrl(player.photoUrl);
   }
 
   @override
@@ -37,35 +37,35 @@ class PlayerEditScreen extends StatelessWidget {
         padding: const EdgeInsets.all(5.0),
         child: Column(
           children: [
-            Obx(() => PlayerImagePicker(
-                  photoUrl: player.photoUrl.value,
-                  onImagePicked: (path) {
-                    playerController.setPhotoUrl(path);
-                  },
-                )),
+            PlayerImagePicker(
+              photoUrl: player.photoUrl,
+              onImagePicked: (path) {
+                playerController.setPhotoUrl(path);
+              },
+            ),
             const SizedBox(height: 20),
             PlayerNameField(controller: playerController.nameController),
             const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
-                  child: Obx(() => PlayerPositionDropdown(
-                        selectedPosition:
-                            playerController.selectedPosition.value,
-                        onChanged: (newValue) {
-                          playerController.setSelectedPosition(newValue!);
-                        },
-                      )),
-                ),
+                    child: Obx(
+                  () => PlayerPositionDropdown(
+                    selectedPosition: playerController.selectedPosition.value,
+                    onChanged: (newValue) {
+                      playerController.setSelectedPosition(newValue!);
+                    },
+                  ),
+                )),
                 const SizedBox(width: 20),
                 Expanded(
-                  child: Obx(() => PlayerSkillRatingField(
-                        initialValue: player.skillRating.value,
-                        skillRating: playerController.skillRating.value,
-                        onChanged: (newValue) {
-                          playerController.setSkillRating(newValue);
-                        },
-                      )),
+                  child: PlayerSkillRatingField(
+                    initialValue: player.skillRating,
+                    skillRating: playerController.skillRating.value,
+                    onChanged: (newValue) {
+                      playerController.setSkillRating(newValue);
+                    },
+                  ),
                 ),
               ],
             ),
@@ -111,7 +111,7 @@ class PlayerEditScreen extends StatelessWidget {
                   onPressed: () {
                     if (playerController.nameController.text.isNotEmpty) {
                       final updatedPlayer = Player(
-                        id: player.id.value,
+                        id: player.id,
                         name: playerController.nameController.text,
                         position: playerController.selectedPosition.value,
                         skillRating: playerController.skillRating.value,
@@ -119,8 +119,8 @@ class PlayerEditScreen extends StatelessWidget {
                         phase: playerController.phase.value,
                         movement: playerController.movement.value,
                         photoUrl: playerController.photoUrl.value,
-                        isChecked: player.isChecked.value,
-                        groupId: player.groupId.value,
+                        isChecked: player.isChecked,
+                        groupId: player.groupId,
                       );
                       playerController.updatePlayer(updatedPlayer);
                       Get.back(result: true);

@@ -114,7 +114,7 @@ class GroupDetailScreen extends StatelessWidget {
           } else {
             final players = playerController.players;
             final selectedPlayersCount =
-                players.where((p) => p.isChecked.value).length;
+                players.where((p) => p.isChecked).length;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -163,7 +163,7 @@ class GroupDetailScreen extends StatelessWidget {
                                     color: Colors.green, size: 50)
                                 : kIsWeb
                                     ? Image.network(
-                                        player.photoUrl.value,
+                                        player.photoUrl,
                                         width: 50,
                                         height: 50,
                                         errorBuilder:
@@ -173,7 +173,7 @@ class GroupDetailScreen extends StatelessWidget {
                                         },
                                       )
                                     : Image.file(
-                                        File(player.photoUrl.value),
+                                        File(player.photoUrl),
                                         width: 50,
                                         height: 50,
                                         errorBuilder:
@@ -185,7 +185,7 @@ class GroupDetailScreen extends StatelessWidget {
                             title: Row(
                               children: [
                                 Text(
-                                  player.name.value,
+                                  player.name,
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 18.0),
                                 ),
@@ -194,7 +194,7 @@ class GroupDetailScreen extends StatelessWidget {
                                   padding: const EdgeInsets.all(8.0),
                                   decoration: BoxDecoration(
                                     color: _getSkillRatingColor(
-                                        player.skillRating.value),
+                                        player.skillRating),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   constraints: const BoxConstraints(
@@ -209,16 +209,16 @@ class GroupDetailScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Obx(() => Checkbox(
-                                      value: player.isChecked.value,
-                                      activeColor: Colors.green,
-                                      onChanged: (bool? value) {
-                                        if (value != null) {
-                                          playerController
-                                              .updatePlayerCheckedState(player);
-                                        }
-                                      },
-                                    )),
+                                Checkbox(
+                                  value: player.isChecked,
+                                  activeColor: Colors.green,
+                                  onChanged: (bool? value) {
+                                    if (value != null) {
+                                      playerController
+                                          .updatePlayerCheckedState(player);
+                                    }
+                                  },
+                                ),
                               ],
                             ),
                             subtitle: const Row(

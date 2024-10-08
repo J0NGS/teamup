@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:teamup/controllers/player_controller.dart';
 import 'package:teamup/screens/team_result_screen.dart';
 import 'package:teamup/widgets/team_selection_modal.dart';
+import '../models/player.dart';
 import 'team_generator.dart';
 
 class TeamSelectionModalState extends State<TeamSelectionModal> {
@@ -130,7 +131,19 @@ class TeamSelectionModalState extends State<TeamSelectionModal> {
 
     await playerController.loadPlayers(widget.group.id);
     final selectedPlayers = playerController.players
-        .where((player) => player.isChecked.value)
+        .where((player) => player.isChecked)
+        .map((player) => Player(
+              id: player.id,
+              name: player.name,
+              position: player.position,
+              skillRating: player.skillRating,
+              speed: player.speed,
+              phase: player.phase,
+              movement: player.movement,
+              photoUrl: player.photoUrl,
+              isChecked: player.isChecked,
+              groupId: player.groupId,
+            ))
         .toList();
     final sortedTeams = generateTeams(
       selectedPlayers,

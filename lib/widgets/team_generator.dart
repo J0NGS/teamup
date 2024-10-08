@@ -46,13 +46,13 @@ List<List<Player>> generateTeams(
     for (var team in teams) {
       Map<String, int> positionCount = {};
       for (var player in team) {
-        positionCount[player.position.value] =
-            (positionCount[player.position.value] ?? 0) + 1;
+        positionCount[player.position] =
+            (positionCount[player.position] ?? 0) + 1;
       }
 
       // Ajustar a probabilidade de escolha de jogadores com base na posição
       for (var player in team) {
-        if (positionCount[player.position.value]! > 1) {
+        if (positionCount[player.position]! > 1) {
           probabilities[players.indexOf(player)] *=
               0.9; // Diminuir a probabilidade em 10%
         }
@@ -130,8 +130,7 @@ List<List<Player>> generateTeams(
       Player playerB = teams[teamBIndex][playerBIndex];
 
       // Verificar se algum dos jogadores é goleiro
-      if (playerA.position.value == 'Goleiro' ||
-          playerB.position.value == 'Goleiro') {
+      if (playerA.position == 'Goleiro' || playerB.position == 'Goleiro') {
         continue; // Pular a troca se algum dos jogadores for goleiro
       }
 

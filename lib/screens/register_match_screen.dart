@@ -104,10 +104,9 @@ class RegisterMatchScreen extends StatelessWidget {
       scoreB.value++;
     }
 
-    final player =
-        playerController.players.firstWhere((p) => p.id.value == playerId);
+    final player = playerController.players.firstWhere((p) => p.id == playerId);
     _showGoalDialog(
-        Get.context!, 'Gol do jogador ${player.name.value} adicionado', true);
+        Get.context!, 'Gol do jogador ${player.name} adicionado', true);
   }
 
   void _removeLastGoal(String teamId) {
@@ -123,9 +122,9 @@ class RegisterMatchScreen extends StatelessWidget {
         }
 
         final player = playerController.players
-            .firstWhere((p) => p.id.value == lastGoal.playerId);
-        _showGoalDialog(Get.context!,
-            'Gol do jogador ${player.name.value} removido', false);
+            .firstWhere((p) => p.id == lastGoal.playerId);
+        _showGoalDialog(
+            Get.context!, 'Gol do jogador ${player.name} removido', false);
       }
     }
   }
@@ -145,15 +144,36 @@ class RegisterMatchScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              'Cancelar',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              // Save match and goals logic here
+            onPressed: () async {
+              // Create a new Game object
+              final game = Game(
+                id: const Uuid().v4(),
+                teamAId: selectedTeamA.value,
+                teamBId: selectedTeamB.value,
+                eventId: event.id,
+                time: DateTime.now(),
+              );
+
+              // Update gameId for all goals
+              final updatedGoals = goals.map((goal) {
+                return Goal(
+                  id: goal.id,
+                  playerId: goal.playerId,
+                  teamId: goal.teamId,
+                  gameId: game.id,
+                  time: goal.time,
+                );
+              }).toList();
+
+              // Save the game
+              await matchController.addMatch(game);
+
+              // Save all goals
+              for (var goal in updatedGoals) {
+                await goalController.addGoal(goal);
+              }
+
+              // Close the dialog and navigate back
               Navigator.of(context).pop();
               Get.back();
             },
@@ -161,7 +181,7 @@ class RegisterMatchScreen extends StatelessWidget {
               'Encerrar',
               style: TextStyle(color: Colors.green),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -221,10 +241,10 @@ class RegisterMatchScreen extends StatelessWidget {
                 dropdownColor: Black100,
                 items: team.players.map((playerId) {
                   final player = playerController.players
-                      .firstWhere((p) => p.id.value == playerId);
+                      .firstWhere((p) => p.id == playerId);
                   return DropdownMenuItem<String>(
-                    value: player.id.value,
-                    child: Text(player.name.value,
+                    value: player.id,
+                    child: Text(player.name,
                         style: const TextStyle(color: Colors.white)),
                   );
                 }).toList(),

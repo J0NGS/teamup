@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:teamup/services/player_storage_service.dart';
-
 import '../models/player.dart';
 
 class PlayerController extends GetxController {
@@ -42,7 +40,7 @@ class PlayerController extends GetxController {
   void setIsChecked(bool value) => isChecked.value = value;
 
   Future<Player?> getById(String id) async {
-    return players.firstWhereOrNull((player) => player.id.value == id);
+    return players.firstWhereOrNull((player) => player.id == id);
   }
 
   Future<void> loadPlayers(String groupId) async {
@@ -51,31 +49,31 @@ class PlayerController extends GetxController {
 
   Future<void> addPlayer(Player player) async {
     await _storageService.createPlayer(player);
-    loadPlayers(player.groupId.value);
+    loadPlayers(player.groupId);
   }
 
   Future<void> updatePlayer(Player player) async {
     await _storageService.updatePlayer(player);
-    loadPlayers(player.groupId.value);
+    loadPlayers(player.groupId);
   }
 
   Future<void> removePlayer(Player player) async {
-    await _storageService.deletePlayer(player.id.value);
-    loadPlayers(player.groupId.value);
+    await _storageService.deletePlayer(player.id);
+    loadPlayers(player.groupId);
   }
 
   Future<void> removeCheckedPlayers(String groupId) async {
     final playersToRemove =
-        players.where((player) => player.isChecked.value).toList();
+        players.where((player) => player.isChecked).toList();
     for (var player in playersToRemove) {
-      await _storageService.deletePlayer(player.id.value);
+      await _storageService.deletePlayer(player.id);
     }
     loadPlayers(groupId);
   }
 
   Future<void> updatePlayerCheckedState(Player player) async {
-    player.isChecked.value = !player.isChecked.value;
+    player.isChecked = !player.isChecked;
     await _storageService.updatePlayer(player);
-    loadPlayers(player.groupId.value);
+    loadPlayers(player.groupId);
   }
 }

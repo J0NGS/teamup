@@ -30,7 +30,7 @@ class PlayerStorageService {
       'players',
       player.toMap(),
       where: 'id = ?',
-      whereArgs: [player.id.value],
+      whereArgs: [player.id],
     );
   }
 
