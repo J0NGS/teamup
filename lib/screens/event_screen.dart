@@ -149,22 +149,143 @@ class EventScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'Partida ${games.indexOf(game) + 1}',
-                                style: const TextStyle(
-                                    color: Colors.green, fontSize: 16),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Partida ${games.indexOf(game) + 1}',
+                                    style: const TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
                               ),
-                              Text(
-                                'Time A: ${game.teamAId}',
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 14),
-                              ),
-                              Text(
-                                'Time B: ${game.teamBId}',
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 14),
+                              Row(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        'Time ${teams.indexWhere((team) => team.id == game.teamAId) + 1}',
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                      ),
+                                      FutureBuilder(
+                                        future: goalController
+                                            .searchGoalsByMatchId(game.id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Text(
+                                              'Carregando gols...',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return const Text(
+                                              'Erro ao carregar gols',
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 14),
+                                            );
+                                          } else if (snapshot.hasData) {
+                                            final goals =
+                                                snapshot.data as List<Goal>;
+                                            final teamAGoals = goals
+                                                .where((goal) =>
+                                                    goal.teamId == game.teamAId)
+                                                .length;
+                                            return Text(
+                                              '$teamAGoals',
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold),
+                                            );
+                                          } else {
+                                            return const Text(
+                                              '0',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(padding: const EdgeInsets.all(5.0)),
+                                  Column(
+                                    children: [
+                                      Padding(
+                                          padding: const EdgeInsets.all(15.0)),
+                                      Text(
+                                        'X',
+                                        style: const TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
+                                  Padding(padding: const EdgeInsets.all(8.0)),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        'Time ${teams.indexWhere((team) => team.id == game.teamBId) + 1}',
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                      ),
+                                      FutureBuilder(
+                                        future: goalController
+                                            .searchGoalsByMatchId(game.id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Text(
+                                              'Carregando gols...',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return const Text(
+                                              'Erro ao carregar gols',
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 14),
+                                            );
+                                          } else if (snapshot.hasData) {
+                                            final goals =
+                                                snapshot.data as List<Goal>;
+                                            final teamBGoals = goals
+                                                .where((goal) =>
+                                                    goal.teamId == game.teamBId)
+                                                .length;
+                                            return Text(
+                                              '$teamBGoals',
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold),
+                                            );
+                                          } else {
+                                            return const Text(
+                                              '0',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
                             ],
                           ),
@@ -179,100 +300,6 @@ class EventScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: BackgroundBlack,
-    );
-  }
-
-  Widget _buildGameContainer(Game game, Team teamA, Team teamB) {
-    return FutureBuilder(
-      future: goalController.searchGoalsByMatchId(game.id),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return const Center(child: Text('Erro ao carregar gols'));
-        } else if (snapshot.hasData) {
-          final goals = snapshot.data as List<Goal>;
-          final goalsA = goals.where((goal) => goal.teamId == teamA.id).toList()
-            ..sort((a, b) => a.time.compareTo(b.time));
-          final goalsB = goals.where((goal) => goal.teamId == teamB.id).toList()
-            ..sort((a, b) => a.time.compareTo(b.time));
-
-          return Container(
-            margin: const EdgeInsets.all(8.0),
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Black100,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Coluna do Time A
-                _buildTeamColumn(teamA, goalsA),
-                // Coluna do Meio (Informações adicionais, se necessário)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Partida ${matchController.matches.indexOf(game) + 1}',
-                      style: const TextStyle(color: Colors.green, fontSize: 16),
-                    ),
-                  ],
-                ),
-                // Coluna do Time B
-                _buildTeamColumn(teamB, goalsB),
-              ],
-            ),
-          );
-        } else {
-          return const Center(child: Text('Nenhum gol encontrado'));
-        }
-      },
-    );
-  }
-
-  Widget _buildTeamColumn(Team team, List<Goal> goals) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Time ${teams.indexOf(team) + 1}',
-          style: const TextStyle(color: Colors.green, fontSize: 16),
-        ),
-        Text(
-          'Gols: ${goals.length}',
-          style: const TextStyle(color: Colors.white, fontSize: 14),
-        ),
-        ...goals.map((goal) {
-          return FutureBuilder(
-            future: playerController.getById(goal.playerId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text(
-                  'Carregando...',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                );
-              } else if (snapshot.hasError) {
-                return const Text(
-                  'Erro ao carregar jogador',
-                  style: TextStyle(color: Colors.red, fontSize: 14),
-                );
-              } else if (snapshot.hasData) {
-                final player = snapshot.data;
-                return Text(
-                  '⚽ ${player!.name} ⏱️ ${goal.time}',
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
-                );
-              } else {
-                return const Text(
-                  'Jogador não encontrado',
-                  style: TextStyle(color: Colors.red, fontSize: 14),
-                );
-              }
-            },
-          );
-        }).toList(),
-      ],
     );
   }
 }

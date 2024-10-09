@@ -35,7 +35,7 @@ class GoalController extends GetxController {
     loadGoals();
   }
 
-  Future<void> searchGoalsByMatchId(String matchId) async {
-    goals.value = await _storageService.searchGoalsByMatchId(matchId);
+  Future<List<Goal>?> searchGoalsByMatchId(String matchId) async {
+    return _storageService.searchGoalsByMatchId(matchId);
   }
 }
