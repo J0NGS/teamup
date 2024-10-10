@@ -13,6 +13,7 @@ import '../models/group.dart';
 import '../models/player.dart';
 import '../utils/colors.dart';
 import '../widgets/team_selection_modal.dart';
+import 'group_event_screen.dart';
 
 class GroupDetailScreen extends StatelessWidget {
   final Group group;
@@ -119,24 +120,38 @@ class GroupDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.center,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Get.to(() => PlayerCreationScreen(group: group))!
-                          .then((result) {
-                        if (result == true) {
-                          playerController.loadPlayers(group.id);
-                        }
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.black87,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => PlayerCreationScreen(group: group))!
+                            .then((result) {
+                          if (result == true) {
+                            playerController.loadPlayers(group.id);
+                          }
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.black87,
+                      ),
+                      child: const Text("Criar Jogador",
+                          style: TextStyle(color: Colors.black)),
                     ),
-                    child: const Text("Criar Jogador",
-                        style: TextStyle(color: Colors.black)),
-                  ),
+                    Spacer(),
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => GroupEventsScreen(groupId: group.id));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.black87,
+                      ),
+                      child: const Text("Ver eventos do grupo",
+                          style: TextStyle(color: Colors.black)),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 Expanded(
@@ -242,9 +257,9 @@ class GroupDetailScreen extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(200, 70),
+                    minimumSize: const Size(200, 10),
                     backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
                     alignment: Alignment.center,
                   ),
                   child: Column(

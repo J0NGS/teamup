@@ -35,7 +35,7 @@ class EventController extends GetxController {
     loadEvents();
   }
 
-  Future<void> searchEventByGroupId(String groupId) async {
-    events.value = await _storageService.searchEventByGroupId(groupId);
+  Future<List<Event>> searchEventByGroupId(String groupId) async {
+    return await _storageService.searchEventByGroupId(groupId);
   }
 }

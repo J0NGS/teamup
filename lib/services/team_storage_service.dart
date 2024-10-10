@@ -43,7 +43,7 @@ class TeamStorageService {
     final db = await DatabaseService().database;
     final List<Map<String, dynamic>> maps = await db.query(
       'teams',
-      where: 'event = ?',
+      where: 'eventId = ?',
       whereArgs: [eventId],
     );
     return List.generate(maps.length, (i) {

@@ -35,7 +35,7 @@ class TeamController extends GetxController {
     loadTeams();
   }
 
-  Future<void> searchTeamsByEventId(String eventId) async {
-    teams.value = await _storageService.searchTeamsByEventId(eventId);
+  Future<List<Team>> getTeamsByEventId(String eventId) async {
+    return await _storageService.searchTeamsByEventId(eventId);
   }
 }

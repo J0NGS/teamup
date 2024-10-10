@@ -35,7 +35,7 @@ class MatchController extends GetxController {
     loadMatches();
   }
 
-  Future<void> searchMatchByEventId(String eventId) async {
-    matches.value = await _storageService.searchMatchByEventId(eventId);
+  Future<List<Game>> searchMatchByEventId(String eventId) async {
+    return await _storageService.searchMatchByEventId(eventId);
   }
 }
