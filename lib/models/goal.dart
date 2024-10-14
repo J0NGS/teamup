@@ -19,7 +19,7 @@ class Goal {
       'playerId': playerId,
       'teamId': teamId,
       'gameId': gameId,
-      'time': time.inMinutes.toString(), // Correct method
+      'time': time.inSeconds.toString(), // Correct method
     };
   }
 
@@ -29,7 +29,7 @@ class Goal {
       playerId: map['playerId'],
       teamId: map['teamId'],
       gameId: map['gameId'],
-      time: Duration(minutes: int.parse(map['time'])), // Correct type
+      time: Duration(seconds: int.parse(map['time'])), // Correct type
     );
   }
 }
