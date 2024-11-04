@@ -5,6 +5,7 @@ import 'package:teamup/models/event.dart';
 import 'package:teamup/models/team.dart';
 import 'package:teamup/utils/colors.dart';
 import 'package:teamup/controllers/player_controller.dart';
+import '../controllers/event_controller.dart';
 import '../controllers/goal_controller.dart';
 import '../models/game.dart';
 import '../models/goal.dart';
@@ -16,6 +17,7 @@ class EventScreen extends StatelessWidget {
   final MatchController matchController = Get.put(MatchController());
   final PlayerController playerController = Get.put(PlayerController());
   final GoalController goalController = Get.put(GoalController());
+  final EventController eventController = Get.put(EventController());
 
   EventScreen({super.key, required this.event, required this.teams});
 
@@ -128,25 +130,26 @@ class EventScreen extends StatelessWidget {
                       style: TextStyle(color: Colors.green, fontSize: 18),
                     ),
                   ),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await Get.to(() => RegisterMatchScreen(
-                              event: event,
-                              teams: teams,
-                            ));
-                        matchController.loadMatches();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.green,
-                      ),
-                      child: const Text(
-                        'Começar uma partida',
-                        style: TextStyle(color: Black100),
+                  if (!event.isFinished)
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await Get.to(() => RegisterMatchScreen(
+                                event: event,
+                                teams: teams,
+                              ));
+                          matchController.loadMatches();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.green,
+                        ),
+                        child: const Text(
+                          'Começar uma partida',
+                          style: TextStyle(color: Black100),
+                        ),
                       ),
                     ),
-                  ),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -566,6 +569,24 @@ class EventScreen extends StatelessWidget {
               );
             }),
           ),
+          if (!event.isFinished)
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  event.isFinished = true;
+                  await eventController.updateEvent(event);
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text(
+                  'Encerrar evento',
+                  style: TextStyle(color: Black100),
+                ),
+              ),
+            ),
         ],
       ),
       backgroundColor: BackgroundBlack,

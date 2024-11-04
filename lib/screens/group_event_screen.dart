@@ -15,24 +15,36 @@ class GroupEventsScreen extends StatelessWidget {
 
   GroupEventsScreen({super.key, required this.groupId});
 
+  void _sortEvents(List<Event> events) {
+    if (isAscending.value) {
+      events.sort((a, b) => a.date.compareTo(b.date));
+    } else {
+      events.sort((a, b) => b.date.compareTo(a.date));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     eventController.searchEventByGroupId(groupId);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Eventos do Grupo',
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Eventos do Grupo',
+          style: TextStyle(color: Colors.white),
+        ),
         iconTheme: const IconThemeData(color: Colors.green),
         backgroundColor: Black100,
         actions: [
           Obx(() {
             return IconButton(
               icon: Icon(
-                  isAscending.value ? Icons.arrow_downward : Icons.arrow_upward,
-                  color: Colors.green),
+                isAscending.value ? Icons.arrow_downward : Icons.arrow_upward,
+                color: Colors.green,
+              ),
               onPressed: () {
                 isAscending.value = !isAscending.value;
+                eventController.events.refresh();
               },
             );
           }),
@@ -43,21 +55,25 @@ class GroupEventsScreen extends StatelessWidget {
             .where((event) => event.groupId == groupId)
             .toList();
 
-        events.sort((a, b) => isAscending.value
-            ? a.date.compareTo(b.date)
-            : b.date.compareTo(a.date));
+        _sortEvents(events);
 
         if (events.isEmpty) {
           return const Center(
-            child: Text('Nenhum evento encontrado',
-                style: TextStyle(color: Colors.white)),
+            child: Text(
+              'Nenhum evento encontrado',
+              style: TextStyle(color: Colors.white),
+            ),
           );
         }
+
+        List<Event> numberedEvents = List.from(events);
+        numberedEvents.sort((a, b) => a.date.compareTo(b.date));
 
         return ListView.builder(
           itemCount: events.length,
           itemBuilder: (context, index) {
             final event = events[index];
+            final eventNumber = numberedEvents.indexOf(event) + 1;
             return GestureDetector(
               onTap: () async {
                 List<Team>? teams =
@@ -75,7 +91,7 @@ class GroupEventsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Evento ${index + 1}',
+                      'Evento $eventNumber',
                       style: const TextStyle(color: Colors.green, fontSize: 16),
                     ),
                     const SizedBox(height: 8),

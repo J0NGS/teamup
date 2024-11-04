@@ -127,7 +127,7 @@ class EventDataModal extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green),
                           child: const Text('OK',
-                              style: TextStyle(color: Colors.white)),
+                              style: TextStyle(color: Black100)),
                         ),
                       ],
                     ),

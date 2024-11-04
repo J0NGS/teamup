@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:teamup/controllers/match_controller.dart';
@@ -40,6 +41,11 @@ class RegisterMatchScreen extends StatelessWidget {
   Timer? _timer;
 
   void _startTimer() {
+    if (selectedTeamA.value.isEmpty || selectedTeamB.value.isEmpty) {
+      _showErrorDialog(
+          Get.context!, 'Selecione ambos os times antes de iniciar o timer.');
+      return;
+    }
     if (_isTimerRunning.value) return; // Prevent multiple timers
     _isTimerRunning.value = true;
     isPlaying.value = true;
@@ -53,10 +59,39 @@ class RegisterMatchScreen extends StatelessWidget {
     });
   }
 
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.red,
+        title: const Text(
+          'Erro',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'OK',
+              style: TextStyle(color: Colors.green),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _pauseTimer() {
     isPlaying.value = false;
     _isTimerRunning.value = false;
     _timer?.cancel();
+    _timer = null;
   }
 
   void _vibrate() {
@@ -94,7 +129,8 @@ class RegisterMatchScreen extends StatelessWidget {
       id: const Uuid().v4(),
       playerId: playerId,
       teamId: teamId,
-      gameId: '', // This will be set when the match is saved
+      gameId: '',
+      // This will be set when the match is saved
       time: matchTime - elapsedTime.value,
     );
     goals.add(goal);
@@ -145,7 +181,8 @@ class RegisterMatchScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () async {
-              // Create a new Game object
+              _pauseTimer();
+
               final game = Game(
                 id: const Uuid().v4(),
                 teamAId: selectedTeamA.value,
@@ -165,15 +202,12 @@ class RegisterMatchScreen extends StatelessWidget {
                 );
               }).toList();
 
-              // Save the game
               await matchController.addMatch(game);
 
-              // Save all goals
               for (var goal in updatedGoals) {
                 await goalController.addGoal(goal);
               }
 
-              // Close the dialog and navigate back
               Navigator.of(context).pop();
               Get.back();
             },
@@ -292,97 +326,109 @@ class RegisterMatchScreen extends StatelessWidget {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registrar Partida',
-            style: TextStyle(color: Colors.white)),
-        iconTheme: const IconThemeData(color: Colors.green),
-        backgroundColor: Black100,
+    // Verificação se o tempo já foi startado
+    return WillPopScope(
+      onWillPop: () async {
+        if (!isPlaying.value) {
+          return true;
+        }
+        _endMatch(context);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Registrar Partida',
+              style: TextStyle(color: Colors.white)),
+          iconTheme: const IconThemeData(color: Colors.green),
+          backgroundColor: Black100,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: isPortrait
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildTeamColumn('Time A', selectedTeamA, selectedPlayerA,
+                        scoreA, teams, _addGoal, _removeLastGoal),
+                    const SizedBox(height: 16), // Add padding between rows
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Obx(() => Text(
+                              '${elapsedTime.value.inMinutes}:${(elapsedTime.value.inSeconds % 60).toString().padLeft(2, '0')}',
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 36),
+                            )),
+                        IconButton(
+                          icon: Icon(
+                              isPlaying.value ? Icons.pause : Icons.play_arrow),
+                          color: Colors.green,
+                          onPressed:
+                              isPlaying.value ? _pauseTimer : _startTimer,
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _endMatch(context),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.green,
+                          ),
+                          child: const Text(
+                            'Encerrar e salvar a partida',
+                            style: TextStyle(color: Black100),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16), // Add padding between rows
+                    _buildTeamColumn('Time B', selectedTeamB, selectedPlayerB,
+                        scoreB, teams, _addGoal, _removeLastGoal),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _buildTeamColumn('Time A', selectedTeamA, selectedPlayerA,
+                        scoreA, teams, _addGoal, _removeLastGoal),
+                    const SizedBox(width: 16), // Add padding between columns
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Obx(() => Text(
+                              '${elapsedTime.value.inMinutes}:${(elapsedTime.value.inSeconds % 60).toString().padLeft(2, '0')}',
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 36),
+                            )),
+                        IconButton(
+                          icon: Icon(
+                              isPlaying.value ? Icons.pause : Icons.play_arrow),
+                          color: Colors.green,
+                          onPressed:
+                              isPlaying.value ? _pauseTimer : _startTimer,
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _endMatch(context),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.green,
+                          ),
+                          child: const Text(
+                            'Encerrar e salvar a partida',
+                            style: TextStyle(color: Black100),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 16), // Add padding between columns
+                    _buildTeamColumn('Time B', selectedTeamB, selectedPlayerB,
+                        scoreB, teams, _addGoal, _removeLastGoal),
+                  ],
+                ),
+        ),
+        backgroundColor: BackgroundBlack,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isPortrait
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildTeamColumn('Time A', selectedTeamA, selectedPlayerA,
-                      scoreA, teams, _addGoal, _removeLastGoal),
-                  const SizedBox(height: 16), // Add padding between rows
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Obx(() => Text(
-                            '${elapsedTime.value.inMinutes}:${(elapsedTime.value.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 36),
-                          )),
-                      IconButton(
-                        icon: Icon(
-                            isPlaying.value ? Icons.pause : Icons.play_arrow),
-                        color: Colors.green,
-                        onPressed: isPlaying.value ? _pauseTimer : _startTimer,
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _endMatch(context),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.green,
-                        ),
-                        child: const Text(
-                          'Encerrar e salvar a partida',
-                          style: TextStyle(color: Black100),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16), // Add padding between rows
-                  _buildTeamColumn('Time B', selectedTeamB, selectedPlayerB,
-                      scoreB, teams, _addGoal, _removeLastGoal),
-                ],
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildTeamColumn('Time A', selectedTeamA, selectedPlayerA,
-                      scoreA, teams, _addGoal, _removeLastGoal),
-                  const SizedBox(width: 16), // Add padding between columns
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Obx(() => Text(
-                            '${elapsedTime.value.inMinutes}:${(elapsedTime.value.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 36),
-                          )),
-                      IconButton(
-                        icon: Icon(
-                            isPlaying.value ? Icons.pause : Icons.play_arrow),
-                        color: Colors.green,
-                        onPressed: isPlaying.value ? _pauseTimer : _startTimer,
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _endMatch(context),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.green,
-                        ),
-                        child: const Text(
-                          'Encerrar e salvar a partida',
-                          style: TextStyle(color: Black100),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 16), // Add padding between columns
-                  _buildTeamColumn('Time B', selectedTeamB, selectedPlayerB,
-                      scoreB, teams, _addGoal, _removeLastGoal),
-                ],
-              ),
-      ),
-      backgroundColor: BackgroundBlack,
     );
   }
 }

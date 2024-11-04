@@ -143,11 +143,11 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.black87,
+                    backgroundColor: Black100,
+                    foregroundColor: Colors.grey,
                   ),
                   child: const Text("Criar Jogador",
-                      style: TextStyle(color: Colors.black)),
+                      style: TextStyle(color: Colors.green)),
                 ),
                 const Spacer(),
                 const Text("Nenhum jogador cadastrado",
@@ -177,11 +177,11 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.black87,
+                        backgroundColor: Black100,
+                        foregroundColor: Colors.grey,
                       ),
                       child: const Text("Criar Jogador",
-                          style: TextStyle(color: Colors.black)),
+                          style: TextStyle(color: Colors.green)),
                     ),
                     Spacer(),
                     ElevatedButton(
@@ -190,11 +190,11 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                             () => GroupEventsScreen(groupId: widget.group.id));
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.black87,
+                        backgroundColor: Black100,
+                        foregroundColor: Colors.grey,
                       ),
                       child: const Text("Ver eventos do grupo",
-                          style: TextStyle(color: Colors.black)),
+                          style: TextStyle(color: Colors.green)),
                     ),
                   ],
                 ),

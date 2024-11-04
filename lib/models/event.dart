@@ -6,6 +6,7 @@ class Event {
   Duration matchTime;
   String place;
   String groupId;
+  bool isFinished;
 
   Event({
     required this.id,
@@ -13,6 +14,7 @@ class Event {
     required this.matchTime,
     required this.place,
     required this.groupId,
+    this.isFinished = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +24,7 @@ class Event {
       'matchTime': matchTime.inSeconds,
       'place': place,
       'groupId': groupId,
+      'isFinished': isFinished ? 1 : 0,
     };
   }
 
@@ -32,6 +35,7 @@ class Event {
       matchTime: Duration(seconds: int.parse(map['matchTime'].toString())),
       place: map['place'],
       groupId: map['groupId'],
+      isFinished: map['isFinished'] == 1,
     );
   }
 

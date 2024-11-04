@@ -18,7 +18,7 @@ class DatabaseService {
     String path = join(await getDatabasesPath(), 'teamup.db');
     return openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE players(
@@ -42,6 +42,7 @@ class DatabaseService {
             matchTime TEXT,
             place TEXT,
             groupId TEXT,
+            isFinished INTEGER DEFAULT 0,
             FOREIGN KEY(groupId) REFERENCES groups(id)
           )
         ''');
@@ -85,7 +86,10 @@ class DatabaseService {
         ''');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) {}
+        if (oldVersion < 2) {
+          await db.execute(
+              'ALTER TABLE events ADD COLUMN isFinished INTEGER DEFAULT 0');
+        }
       },
     );
   }
