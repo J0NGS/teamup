@@ -15,28 +15,71 @@ import '../utils/colors.dart';
 import '../widgets/team_selection_modal.dart';
 import 'group_event_screen.dart';
 
-class GroupDetailScreen extends StatelessWidget {
+class GroupDetailScreen extends StatefulWidget {
   final Group group;
 
   const GroupDetailScreen({super.key, required this.group});
 
-  Color _getSkillRatingColor(int skillRating) {
-    double ratio = skillRating / 100.0;
-    int red = (255 * (1 - ratio)).toInt();
-    int green = (255 * ratio).toInt();
-    return Color.fromARGB(255, red, green, 0);
-  }
+  @override
+  _GroupDetailScreenState createState() => _GroupDetailScreenState();
+}
+
+Color _getSkillRatingColor(int skillRating) {
+  double ratio = skillRating / 100.0;
+  int red = (255 * (1 - ratio)).toInt();
+  int green = (255 * ratio).toInt();
+  return Color.fromARGB(255, red, green, 0);
+}
+
+class _GroupDetailScreenState extends State<GroupDetailScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  bool _selectAll = false;
+  String _sortOption = 'Nome';
 
   @override
   Widget build(BuildContext context) {
     final PlayerController playerController = Get.put(PlayerController());
 
-    playerController.loadPlayers(group.id);
+    playerController.loadPlayers(widget.group.id);
+
+    void _filterPlayers() {
+      setState(() {
+        _searchQuery = _searchController.text.toLowerCase();
+      });
+    }
+
+    void _toggleSelectAll(bool? value) {
+      setState(() {
+        _selectAll = value ?? false;
+        playerController.players.forEach((player) {
+          player.isChecked = _selectAll;
+        });
+      });
+    }
+
+    List<Player> _getFilteredPlayers() {
+      List<Player> filteredPlayers = playerController.players
+          .where((player) => player.name.toLowerCase().contains(_searchQuery))
+          .toList();
+
+      if (_sortOption == 'Nome') {
+        filteredPlayers.sort((a, b) => a.name.compareTo(b.name));
+      } else if (_sortOption == 'NomeDesc') {
+        filteredPlayers.sort((a, b) => b.name.compareTo(a.name));
+      } else if (_sortOption == 'Skill') {
+        filteredPlayers.sort((a, b) => b.skillRating.compareTo(a.skillRating));
+      } else if (_sortOption == 'SkillDesc') {
+        filteredPlayers.sort((a, b) => a.skillRating.compareTo(b.skillRating));
+      }
+
+      return filteredPlayers;
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Center(
-            child: Text("Grupo: ${group.name}",
+            child: Text("Grupo: ${widget.group.name}",
                 style: const TextStyle(color: Colors.white))),
         backgroundColor: Black100,
         iconTheme: const IconThemeData(color: Colors.green),
@@ -70,7 +113,8 @@ class GroupDetailScreen extends StatelessWidget {
                         child: const Text('Excluir',
                             style: TextStyle(color: Colors.red)),
                         onPressed: () {
-                          playerController.removeCheckedPlayers(group.id);
+                          playerController
+                              .removeCheckedPlayers(widget.group.id);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -91,10 +135,10 @@ class GroupDetailScreen extends StatelessWidget {
                 const Padding(padding: EdgeInsets.all(5.0)),
                 ElevatedButton(
                   onPressed: () {
-                    Get.to(() => PlayerCreationScreen(group: group))!
+                    Get.to(() => PlayerCreationScreen(group: widget.group))!
                         .then((result) {
                       if (result == true) {
-                        playerController.loadPlayers(group.id);
+                        playerController.loadPlayers(widget.group.id);
                       }
                     });
                   },
@@ -113,7 +157,7 @@ class GroupDetailScreen extends StatelessWidget {
               ],
             );
           } else {
-            final players = playerController.players;
+            final players = _getFilteredPlayers();
             final selectedPlayersCount =
                 players.where((p) => p.isChecked).length;
             return Column(
@@ -125,10 +169,10 @@ class GroupDetailScreen extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Get.to(() => PlayerCreationScreen(group: group))!
+                        Get.to(() => PlayerCreationScreen(group: widget.group))!
                             .then((result) {
                           if (result == true) {
-                            playerController.loadPlayers(group.id);
+                            playerController.loadPlayers(widget.group.id);
                           }
                         });
                       },
@@ -142,7 +186,8 @@ class GroupDetailScreen extends StatelessWidget {
                     Spacer(),
                     ElevatedButton(
                       onPressed: () {
-                        Get.to(() => GroupEventsScreen(groupId: group.id));
+                        Get.to(
+                            () => GroupEventsScreen(groupId: widget.group.id));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
@@ -151,6 +196,49 @@ class GroupDetailScreen extends StatelessWidget {
                       child: const Text("Ver eventos do grupo",
                           style: TextStyle(color: Colors.black)),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (value) => _filterPlayers(),
+                        decoration: InputDecoration(
+                          hintText: 'Pesquisar por nome',
+                          hintStyle: TextStyle(color: Colors.white54),
+                          prefixIcon: Icon(Icons.search, color: Colors.green),
+                          filled: true,
+                          fillColor: Black100,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      icon: Icon(Icons.sort_by_alpha, color: Colors.green),
+                      onPressed: () {
+                        setState(() {
+                          _sortOption =
+                              _sortOption == 'Nome' ? 'NomeDesc' : 'Nome';
+                        });
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.sort, color: Colors.green),
+                      onPressed: () {
+                        setState(() {
+                          _sortOption =
+                              _sortOption == 'Skill' ? 'SkillDesc' : 'Skill';
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 10),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -167,7 +255,7 @@ class GroupDetailScreen extends StatelessWidget {
                             Get.to(() => PlayerEditScreen(player: player))!
                                 .then((result) {
                               if (result == true) {
-                                playerController.loadPlayers(group.id);
+                                playerController.loadPlayers(widget.group.id);
                               }
                             });
                           },
@@ -253,7 +341,7 @@ class GroupDetailScreen extends StatelessWidget {
                     Get.bottomSheet(
                       TeamSelectionModal(
                           selectedPlayersCount: selectedPlayersCount,
-                          group: group),
+                          group: widget.group),
                       backgroundColor: Black100,
                       isScrollControlled: true,
                     );
