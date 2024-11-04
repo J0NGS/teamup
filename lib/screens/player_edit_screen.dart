@@ -37,12 +37,12 @@ class PlayerEditScreen extends StatelessWidget {
         padding: const EdgeInsets.all(5.0),
         child: Column(
           children: [
-            PlayerImagePicker(
-              photoUrl: player.photoUrl,
-              onImagePicked: (path) {
-                playerController.setPhotoUrl(path);
-              },
-            ),
+            Obx(() => PlayerImagePicker(
+                  photoUrl: playerController.photoUrl.value,
+                  onImagePicked: (path) {
+                    playerController.setPhotoUrl(path);
+                  },
+                )),
             const SizedBox(height: 20),
             PlayerNameField(controller: playerController.nameController),
             const SizedBox(height: 20),
