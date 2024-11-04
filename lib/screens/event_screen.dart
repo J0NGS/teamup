@@ -141,7 +141,10 @@ class EventScreen extends StatelessWidget {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.green,
                       ),
-                      child: const Text('Começar uma partida'),
+                      child: const Text(
+                        'Começar uma partida',
+                        style: TextStyle(color: Black100),
+                      ),
                     ),
                   ),
                   SingleChildScrollView(
@@ -449,9 +452,7 @@ class EventScreen extends StatelessWidget {
                                                     );
                                                   }).toList(),
                                                 ),
-                                                const SizedBox(
-                                                    width:
-                                                        50),
+                                                const SizedBox(width: 50),
                                                 Column(
                                                   children: goals
                                                       .where((goal) =>

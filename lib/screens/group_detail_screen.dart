@@ -173,30 +173,32 @@ class GroupDetailScreen extends StatelessWidget {
                           },
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(8.0),
-                            leading: player.photoUrl.isEmpty
-                                ? const Icon(Icons.person,
-                                    color: Colors.green, size: 50)
-                                : kIsWeb
-                                    ? Image.network(
-                                        player.photoUrl,
-                                        width: 50,
-                                        height: 50,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const Icon(Icons.person,
-                                              color: Colors.green, size: 50);
-                                        },
-                                      )
-                                    : Image.file(
-                                        File(player.photoUrl),
-                                        width: 50,
-                                        height: 50,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const Icon(Icons.person,
-                                              color: Colors.green, size: 50);
-                                        },
-                                      ),
+                            leading: ClipOval(
+                              child: player.photoUrl.isEmpty
+                                  ? const Icon(Icons.person,
+                                      color: Colors.green, size: 50)
+                                  : kIsWeb
+                                      ? Image.network(
+                                          player.photoUrl,
+                                          width: 50,
+                                          height: 50,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return const Icon(Icons.person,
+                                                color: Colors.green, size: 50);
+                                          },
+                                        )
+                                      : Image.file(
+                                          File(player.photoUrl),
+                                          width: 50,
+                                          height: 50,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return const Icon(Icons.person,
+                                                color: Colors.green, size: 50);
+                                          },
+                                        ),
+                            ),
                             title: Row(
                               children: [
                                 Text(

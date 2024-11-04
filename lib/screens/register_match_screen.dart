@@ -329,7 +329,10 @@ class RegisterMatchScreen extends StatelessWidget {
                           foregroundColor: Colors.white,
                           backgroundColor: Colors.green,
                         ),
-                        child: const Text('Encerrar e salvar a partida'),
+                        child: const Text(
+                          'Encerrar e salvar a partida',
+                          style: TextStyle(color: Black100),
+                        ),
                       ),
                     ],
                   ),
@@ -366,7 +369,10 @@ class RegisterMatchScreen extends StatelessWidget {
                           foregroundColor: Colors.white,
                           backgroundColor: Colors.green,
                         ),
-                        child: const Text('Encerrar e salvar a partida'),
+                        child: const Text(
+                          'Encerrar e salvar a partida',
+                          style: TextStyle(color: Black100),
+                        ),
                       ),
                     ],
                   ),
